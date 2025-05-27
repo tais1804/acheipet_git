@@ -119,7 +119,7 @@
                 <?php
                     include "header.php";
                 ?>
-                <main class="relative w-full bg-red-500 teste">
+                <main class="relative w-full bg-red-500 testes">
                     <div class="container mx-auto px-4 py-10 flex flex-col lg:flex-row">
                         <div class="lg:w-1/2 z-10 pr-4 opcoes-home">
                             <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">O que deseja fazer hoje?</h1>
