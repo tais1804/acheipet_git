@@ -38,7 +38,7 @@
     </head>
     <body>
         <div id="webcrumbs">
-            <div class="relative w-full min-h-screen bg-white">
+            <div class="relative w-full min-h-screen bg-white texte-git">
                 <!--<header class="py-4 px-6 flex items-center justify-between menu-topo">
                     <div class="flex items-center">
                         <a href="https://webcrumbs.cloud/placeholder" class="flex items-center">
