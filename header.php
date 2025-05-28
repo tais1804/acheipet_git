@@ -1,4 +1,16 @@
 
+<?php
+// Certifique-se de que a sessão do carrinho está inicializada
+if (!isset($_SESSION['carrinho'])) {
+    $_SESSION['carrinho'] = array();
+}
+
+// Conta total de itens no carrinho (somando as quantidades de cada produto)
+$total_itens_carrinho = 0;
+foreach ($_SESSION['carrinho'] as $produto) {
+    $total_itens_carrinho += $produto['quantidade'];
+}
+?>
 <header class="py-4 px-6 flex items-center justify-between menu-topo">
                     <div class="flex items-center">
                         <a href="index.php" class="flex items-center">
@@ -45,8 +57,8 @@
                         </nav>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <button class="text-gray-700 hover:text-gray-900 transition-colors">
-                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cont-itens">2</span>
+                        <button onclick="window.location.href='carrinho.php'" class="text-gray-700 hover:text-gray-900 transition-colors carrinho">
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cont-itens"><?php echo $total_itens_carrinho; ?></span>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
