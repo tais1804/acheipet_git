@@ -2,6 +2,7 @@
 session_start();
 include "conexao.php";
 include "verificar_login.php";
+include "dados_usuario.php";
 
 if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = array();
@@ -51,8 +52,14 @@ foreach ($_SESSION['carrinho'] as $produto) {
     <title>Carrinho de Compras</title>
     <!-- Bootstrap 5.0 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
 <body class="bg-light">
+    <div id="webcrumbs">
+            <div class="relative w-full min-h-screen">
+                <?php
+                include "header.php";
+                ?>
     <div class="container py-5">
         <h1 class="mb-4 text-center">Carrinho de Compras</h1>
         <div class="mb-4 text-center">
@@ -83,9 +90,12 @@ foreach ($_SESSION['carrinho'] as $produto) {
             </div>
         <?php endif; ?>
     </div>
-
+                </div>
+                </div>
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Bootstrap 5.0 JS (com Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    
 </body>
 </html>
