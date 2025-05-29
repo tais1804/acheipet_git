@@ -3,6 +3,7 @@
 <?php
 include "conexao.php";
 include "verificar_login.php";
+include "dados_usuario.php";
 
 function obterCategoriasProdutos(PDO $conexao): array
 {
@@ -117,6 +118,8 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
         h1, h2 { font-family: 'Lato', sans-serif; }
         .container { max-width: 600px; margin-top: 50px; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
 <body>
     <?php include "header.php"; ?>
@@ -181,7 +184,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
             </div>
         </form>
     </div>
-
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
