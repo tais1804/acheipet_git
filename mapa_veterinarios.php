@@ -191,7 +191,7 @@
                             id="radius"
                             name="radius"
                             min="1000"
-                            max="20000"
+                            max="60000"
                             step="1000"
                             value={searchRadius}
                             onChange={handleRadiusChange}
