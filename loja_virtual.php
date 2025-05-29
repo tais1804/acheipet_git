@@ -185,6 +185,11 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
         .product-card .btn {
             width: 100%;
         }
+        .qtd {
+            display: table !important;
+            margin-top: 7px;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -280,26 +285,42 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                             </div>-->
                             <div class="card-footer bg-transparent border-0 pt-0">
                             <!-- Formulário de adicionar ao carrinho -->
-                            <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
-                                <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
-                                <div class="mb-3">
-                                    <label for="quantidade_<?php echo $produto["id_produto"]; ?>" class="form-label visually-hidden">Quantidade:</label>
-                                    <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
+                             <div class="row">
+                                <div class="col-9">
+                                    <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
+                                        <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
+                                        <div class="row">
+                                        <div class="col-4">
+
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <label class="w-100 qtd align-middle">Qtd</label>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-8">
+                                        <?php if ($produto["estoque"] > 0) : ?>
+                                            <button type="submit" class="btn btn-success">Add ao Carrinho</button>
+                                        <?php else : ?>
+                                            <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
+                                        <?php endif; ?>
+                                        </div>
+                                        </div>
+                                    </form>
                                 </div>
-                                <?php if ($produto["estoque"] > 0) : ?>
-                                    <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
-                                <?php else : ?>
-                                    <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
-                                <?php endif; ?>
-                            </form>
-
-                            <!-- Formulário de editar produto (separado) -->
-                            <form action="editar_produto.php" method="get">
-                                <input type="hidden" name="id_produto" value="<?= $produto['id_produto'] ?>">
-                                <button type="submit" class="btn btn-warning w-100">Editar Produto</button>
-                            </form>
-                        </div>
-
+                                <div class="col-3">
+                                    <!-- Formulário de editar produto (separado) -->
+                                    <form action="editar_produto.php" method="get">
+                                        <input type="hidden" name="id_produto" value="<?= $produto['id_produto'] ?>">
+                                        <button type="submit" class="btn btn-warning w-100">Editar</button>
+                                    </form>
+                                </div>
+                            </div>
+                                        </div>
 
                         </div>
                     </div>

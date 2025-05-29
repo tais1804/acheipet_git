@@ -7,6 +7,12 @@ body{
     background: #f8f9fa !important;
 }
 
+.qtd {
+    display: table !important;
+    margin-top: 7px;
+    height: 100%;
+}
+
 .form-signin {
     max-width: 430px;
     padding: 1rem;
