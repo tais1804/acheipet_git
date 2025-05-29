@@ -1,7 +1,7 @@
 <?php
 $host = "localhost"; 
-$usuario = "tais";
-$senha = "@llSans612";
+$usuario = "root";
+$senha = "";
 $banco = "achei_pet";
 
 try {
