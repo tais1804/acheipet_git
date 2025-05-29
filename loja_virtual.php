@@ -264,7 +264,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                                     <span class="badge bg-info text-dark"><?php echo htmlspecialchars($produto['nome_categoria_animal'] ?? 'Animal Desconhecido'); ?></span>
                                 </p>
                             </div>
-                            <div class="card-footer bg-transparent border-0 pt-0">
+                            <!--<div class="card-footer bg-transparent border-0 pt-0">
                                 <form method="post" action="loja_virtual.php" class="d-flex flex-column">
                                     <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
                                     <div class="mb-3">
@@ -277,7 +277,30 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                                         <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
                                     <?php endif; ?>
                                 </form>
-                            </div>
+                            </div>-->
+                            <div class="card-footer bg-transparent border-0 pt-0">
+                            <!-- Formulário de adicionar ao carrinho -->
+                            <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
+                                <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
+                                <div class="mb-3">
+                                    <label for="quantidade_<?php echo $produto["id_produto"]; ?>" class="form-label visually-hidden">Quantidade:</label>
+                                    <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
+                                </div>
+                                <?php if ($produto["estoque"] > 0) : ?>
+                                    <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
+                                <?php else : ?>
+                                    <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
+                                <?php endif; ?>
+                            </form>
+
+                            <!-- Formulário de editar produto (separado) -->
+                            <form action="editar_produto.php" method="get">
+                                <input type="hidden" name="id_produto" value="<?= $produto['id_produto'] ?>">
+                                <button type="submit" class="btn btn-warning w-100">Editar Produto</button>
+                            </form>
+                        </div>
+
+
                         </div>
                     </div>
                 <?php endforeach; ?>
