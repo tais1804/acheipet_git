@@ -64,6 +64,7 @@ foreach ($_SESSION['carrinho'] as $produto) {
         <h1 class="mb-4 text-center">Carrinho de Compras</h1>
         <div class="mb-4 text-center">
             <a href="index.php" class="btn btn-secondary">Voltar à Home</a>
+            <a href="loja_virtual.php" class="btn btn-primary">Voltar a Loja</a>
         </div>
 
         <?php if (empty($_SESSION['carrinho'])): ?>
