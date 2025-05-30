@@ -72,35 +72,72 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php
             include "header.php";
             ?> 
+            <div class="container py-5 ">
             <div class="row">
-                <div class="col-6">
-                    <h1>Cadastrar Animal Perdido</h1>
-                    <a href="index.php">Home</a>
+                <div class="col-md-12">
+                    <!-- <h2 class="h2">Cadastrar Animal Perdido</h2> -->
+                     <figure>
+  <blockquote class="blockquote">
+    <p>Sentimos muito pela perda do seu pet!</p>
+  </blockquote>
+  <figcaption class="blockquote-footer">
+    Mas vamos ajudar a encontra-lo. Cadastre o máximo de informações sobre ele neste formulário e deixe o resto conosco!
+  </figcaption>
+</figure>
                     <form method="post" action="cadastrar_pet_perdido.php" enctype="multipart/form-data"> <div class="mb-30 row">
-                            <div class="col">
-                                <label class="form-label">Nome do Animal:</label><br>
-                                <input class="form-control" type="text" name="nome" required><br><br>
-                                <label class="form-label">Espécie:</label><br>
-                                <input class="form-control" type="text" name="especie" required><br><br>
+                        <legend>Cadastrar de pet perdido</legend>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nome do Animal</label><br>
+                                    <input class="form-control" type="text" name="nome" required><br><br>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Espécie</label><br>
+                                    <input class="form-control" type="text" name="especie" required><br><br>
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-6">
                                 <label class="form-label">Raça:</label><br>
                                 <input class="form-control" type="text" name="raca" required><br><br>
-                                <label class="form-label">Data em que se perdeu:</label><br>
+                            </div>
+                            <div class="col-md-6">    
+                                <label class="form-label">Data em que se perdeu</label><br>
                                 <input class="form-control" type="date" name="data_perdido" required><br><br>
-                                <label class="form-label">Local onde se perdeu:</label><br>
-                                <input class="form-control" type="text" name="local_perdido" required><br><br>
-
-                                <label class="form-label">Telefone:</label><br>
-                                <input class="form-control" type="text" name="telfonetelefone_contato" required><br><br>
-
-                                <label class="form-label">Descrição:</label><br>
-                                <textarea class="form-control" name="descricao"></textarea><br><br>
-                                <label class="form-label">Foto:</label><br>
-                                <input class="form-control" type="file" name="foto" accept="image/*" required><br><br> 
-                                <input class="form-control btn btn-primary" type="submit" value="Cadastrar">
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">      
+                                <label class="form-label">Local onde se perdeu</label><br>
+                                <input class="form-control" type="text" name="local_perdido" required><br><br>
+</div>
+                            <div class="col-md-6"> 
+                                <label class="form-label">Telefone:</label><br>
+                                <input class="form-control" type="text" name="telfonetelefone_contato" required><br><br>
+</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6"> 
+                                <label class="form-label">Descrição</label><br>
+                                <textarea class="form-control" name="descricao"></textarea><br><br>
+</div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto</label><br>
+                                <input class="form-control" type="file" name="foto" accept="image/*" required><br><br> 
+</div>
+                        </div>
+
+                            <div class="col-md-auto d-grid gap-2 justify-content-md-end">
+                                    <input class="form-control btn btn-primary" type="submit" value="Cadastrar">
+                            </div>
+
+                            
+
+                        </div>
+</div>
                     </form>
                 </div>
+            </div>
             </div>
         </div>
     </div>

@@ -196,11 +196,12 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <?php include "header.php"; // Inclua seu cabeçalho aqui ?>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4 text-primary">Loja Virtual Petshop</h1>
+        <h1 class="text-center mb-4 h2 text-primary">Loja Virtual Petshop</h1>
 
-        <div class="d-flex justify-content-center mb-4">
-            <a href="index.php" class="btn btn-outline-secondary me-2">Página Inicial</a>
+        <div class="d-flex d-grid gap-2 d-md-block justify-content-center mb-4">
+            <a href="index.php" class="btn btn-outline-secondary">Página Inicial</a>
             <a href="carrinho.php" class="btn btn-primary">Ver Carrinho</a>
+            <a href="cadastrar_produto.php" class="btn btn-outline-secondary">Cadastrar novo produto</a>
         </div>
 
         <div class="card mb-4 p-4 shadow-sm">
@@ -328,7 +329,8 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
             </div>
         <?php endif; ?>
     </div>
-                                        <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <br/><br/><br/>
 </body>
 </html>

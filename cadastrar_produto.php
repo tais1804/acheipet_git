@@ -125,7 +125,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <?php include "header.php"; ?>
 
     <div class="container">
-        <h1 class="text-center mb-4 text-primary">Cadastrar Novo Produto</h1>
+        <h1 class="text-center h3 mb-4 text-primary">Cadastrar Novo Produto</h1>
 
         <form method="post" action="cadastrar_produto.php" enctype="multipart/form-data">
             <div class="mb-3">
@@ -178,10 +178,12 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                 <input type="file" id="foto" name="foto" class="form-control" accept="image/*">
             </div>
             
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-success btn-lg">Cadastrar Produto</button>
-                <a href="listar_produto.php" class="btn btn-outline-secondary">Ver Lista de Produtos</a>
+            <div class="d-grid gap-2 d-md-block">
+                <button type="submit" class="btn btn-success">Cadastrar novo produto</button>
+                <a href="listar_produto.php" class="btn btn-outline-secondary">Lista de Produtos cadastrados</a>
+                <a href="loja_virtual.php" class="btn btn-outline-secondary">Cancelar</a>
             </div>
+            <br/>
         </form>
     </div>
     <script src="https://cdn.tailwindcss.com"></script>
