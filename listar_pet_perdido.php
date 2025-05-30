@@ -40,7 +40,7 @@ include "verificar_login.php";
                         include "conexao.php";
 
                         try {
-                            // Seleciona todos os dados da tabela PetsPerdidos
+
                             $stmt = $conexao->query("SELECT * FROM PetsPerdidos");
                             $petsPerdidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

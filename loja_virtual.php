@@ -1,24 +1,13 @@
-
-
 <?php
 session_start();
-include "conexao.php"; 
-include "dados_usuario.php"; 
-include "verificar_login.php"; 
-
+include "conexao.php";
+include "dados_usuario.php";
+include "verificar_login.php";
 
 if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = array();
 }
 
-/**
- * Função para obter produtos do banco de dados, com filtros.
- * @param PDO $conexao Objeto de conexão PDO.
- * @param string $nome_pesquisa Termo de pesquisa para o nome do produto.
- * @param int|null $id_categoria_animal ID da categoria de animal para filtro.
- * @param int|null $id_categoria_produto ID da categoria de produto para filtro.
- * @return array Lista de produtos.
- */
 function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_categoria_animal = null, ?int $id_categoria_produto = null): array
 {
     try {
@@ -26,7 +15,7 @@ function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_catego
                 FROM produtos p
                 LEFT JOIN categoria_animais ca ON p.id_categoria_animal = ca.id_categoria_animal
                 LEFT JOIN categoria_produtos cp ON p.id_categoria_produto = cp.id_categoria_produto
-                WHERE 1=1"; // Cláusula WHERE inicial para facilitar a adição de condições
+                WHERE 1=1";
         
         $params = [];
 
@@ -53,11 +42,6 @@ function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_catego
     }
 }
 
-/**
- * Função para obter categorias de produtos.
- * @param PDO $conexao Objeto de conexão PDO.
- * @return array Lista de categorias de produtos.
- */
 function obterCategoriasProdutos(PDO $conexao): array
 {
     try {
@@ -69,11 +53,6 @@ function obterCategoriasProdutos(PDO $conexao): array
     }
 }
 
-/**
- * Função para obter categorias de animais.
- * @param PDO $conexao Objeto de conexão PDO.
- * @return array Lista de categorias de animais.
- */
 function obterCategoriasAnimais(PDO $conexao): array
 {
     try {
@@ -85,7 +64,6 @@ function obterCategoriasAnimais(PDO $conexao): array
     }
 }
 
-// Processamento do formulário de adicionar ao carrinho
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_produto = $_POST["id_produto"] ?? null;
     $quantidade = $_POST["quantidade"] ?? 0;
@@ -102,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<p class='alert alert-warning'>Quantidade indisponível no estoque! (Disponível: " . $produto["estoque"] . ")</p>";
             } else {
                 if (isset($_SESSION['carrinho'][$id_produto])) {
-                    // Verifica se a adição excede o estoque
                     if (($_SESSION['carrinho'][$id_produto]['quantidade'] + $quantidade) > $produto['estoque']) {
                         echo "<p class='alert alert-warning'>Não é possível adicionar mais. Quantidade no carrinho excederia o estoque!</p>";
                     } else {
@@ -114,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'nome' => $produto['nome'],
                         'preco' => $produto['preco'],
                         'quantidade' => $quantidade,
-                        'imagem' => $produto['imagem'] ?? 'caminho/para/imagem_padrao.jpg' // Adicionar imagem ao carrinho
+                        'imagem' => $produto['imagem'] ?? 'caminho/para/imagem_padrao.jpg'
                     );
                     echo "<p class='alert alert-success'>Produto adicionado ao carrinho com sucesso!</p>";
                 }
@@ -128,15 +105,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Obter parâmetros de filtro da URL
 $nome_pesquisa = $_GET['pesquisa'] ?? '';
 $id_categoria_animal_filtro = isset($_GET['categoria_animal']) ? (int)$_GET['categoria_animal'] : null;
 $id_categoria_produto_filtro = isset($_GET['categoria_produto']) ? (int)$_GET['categoria_produto'] : null;
 
-// Obter produtos com filtros
 $produtos = obterProdutos($conexao, $nome_pesquisa, $id_categoria_animal_filtro, $id_categoria_produto_filtro);
 
-// Obter categorias para os filtros do formulário
 $categorias_animais = obterCategoriasAnimais($conexao);
 $categorias_produtos = obterCategoriasProdutos($conexao);
 
@@ -154,32 +128,32 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
         body { font-family: 'Open Sans', sans-serif; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Lato', sans-serif; }
         .product-card {
-            border: 1px solid #dee2e6; /* light gray border */
-            border-radius: 0.5rem; /* rounded corners */
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
             padding: 1rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* subtle shadow */
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
             transition: transform 0.2s ease-in-out;
         }
         .product-card:hover {
-            transform: translateY(-5px); /* slight lift on hover */
+            transform: translateY(-5px);
         }
         .product-card img {
             max-width: 100%;
-            height: 200px; /* Fixed height for product images */
-            object-fit: contain; /* Ensures the image fits without cropping, maintains aspect ratio */
+            height: 200px;
+            object-fit: contain;
             margin-bottom: 1rem;
             border-radius: 0.25rem;
         }
         .product-card .price {
             font-size: 1.25rem;
             font-weight: bold;
-            color: #0d6efd; /* Bootstrap primary blue */
+            color: #0d6efd;
             margin-bottom: 0.5rem;
         }
         .product-card .stock {
             font-size: 0.875rem;
-            color: #6c757d; /* Bootstrap secondary gray */
+            color: #6c757d;
             margin-bottom: 1rem;
         }
         .product-card .btn {
@@ -193,7 +167,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     </style>
 </head>
 <body>
-    <?php include "header.php"; // Inclua seu cabeçalho aqui ?>
+    <?php include "header.php"; ?>
 
     <div class="container mt-5">
         <h1 class="text-center mb-4 h2 text-primary">Loja Virtual Petshop</h1>
@@ -254,9 +228,9 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                     <div class="col">
                         <div class="product-card d-flex flex-column h-100">
                             <?php 
-                                $imagem_produto = !empty($produto["imagem"]) ? htmlspecialchars($produto["imagem"]) : 'assets/img/placeholder.png'; // Imagem padrão
+                                $imagem_produto = !empty($produto["imagem"]) ? htmlspecialchars($produto["imagem"]) : 'assets/img/placeholder.png';
                                 if (!file_exists($imagem_produto) && !str_starts_with($imagem_produto, 'http')) {
-                                    $imagem_produto = 'assets/img/placeholder.png'; 
+                                    $imagem_produto = 'assets/img/placeholder.png';
                                 }
                             ?>
                             <img src="<?php echo $imagem_produto; ?>" class="card-img-top mx-auto d-block" alt="Imagem do Produto: <?php echo htmlspecialchars($produto['nome']); ?>">
@@ -270,58 +244,42 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                                     <span class="badge bg-info text-dark"><?php echo htmlspecialchars($produto['nome_categoria_animal'] ?? 'Animal Desconhecido'); ?></span>
                                 </p>
                             </div>
-                            <!--<div class="card-footer bg-transparent border-0 pt-0">
-                                <form method="post" action="loja_virtual.php" class="d-flex flex-column">
-                                    <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
-                                    <div class="mb-3">
-                                        <label for="quantidade_<?php echo $produto["id_produto"]; ?>" class="form-label visually-hidden">Quantidade:</label>
-                                        <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
-                                    </div>
-                                    <?php if ($produto["estoque"] > 0) : ?>
-                                        <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
-                                    <?php else : ?>
-                                        <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
-                                    <?php endif; ?>
-                                </form>
-                            </div>-->
                             <div class="card-footer bg-transparent border-0 pt-0">
-                            <!-- Formulário de adicionar ao carrinho -->
-                             <div class="row">
-                                <div class="col-9">
-                                    <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
-                                        <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
-                                        <div class="row">
-                                        <div class="col-5">
+                               <div class="row">
+                                   <div class="col-9">
+                                       <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
+                                           <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
+                                           <div class="row">
+                                           <div class="col-5">
 
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <label class="w-100 qtd align-middle">Qtd</label>
-                                                </div>
-                                                <div class="col-8">
-                                                    <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
-                                                </div>
+                                               <div class="row">
+                                                   <div class="col-4">
+                                                       <label class="w-100 qtd align-middle">Qtd</label>
+                                                   </div>
+                                                   <div class="col-8">
+                                                       <input type="number" id="quantidade_<?php echo $produto["id_produto"]; ?>" name="quantidade" class="form-control text-center" value="1" min="1" max="<?php echo $produto["estoque"]; ?>">
+                                                   </div>
+                                               </div>
+
+                                           </div>
+                                           <div class="col-7">
+                                           <?php if ($produto["estoque"] > 0) : ?>
+                                               <button type="submit" class="btn btn-success">Add</button>
+                                           <?php else : ?>
+                                               <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
+                                           <?php endif; ?>
+                                           </div>
+                                           </div>
+                                       </form>
+                                   </div>
+                                   <div class="col-3">
+                                       <form action="editar_produto.php" method="get">
+                                           <input type="hidden" name="id_produto" value="<?= $produto['id_produto'] ?>">
+                                           <button type="submit" class="btn btn-warning w-100">Editar</button>
+                                       </form>
+                                   </div>
+                               </div>
                                             </div>
-
-                                        </div>
-                                        <div class="col-7">
-                                        <?php if ($produto["estoque"] > 0) : ?>
-                                            <button type="submit" class="btn btn-success">Add</button>
-                                        <?php else : ?>
-                                            <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
-                                        <?php endif; ?>
-                                        </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-3">
-                                    <!-- Formulário de editar produto (separado) -->
-                                    <form action="editar_produto.php" method="get">
-                                        <input type="hidden" name="id_produto" value="<?= $produto['id_produto'] ?>">
-                                        <button type="submit" class="btn btn-warning w-100">Editar</button>
-                                    </form>
-                                </div>
-                            </div>
-                                        </div>
 
                         </div>
                     </div>

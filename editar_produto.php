@@ -11,7 +11,6 @@ if (!$id_produto) {
     exit;
 }
 
-// Buscar categorias
 function obterCategoriasAnimais(PDO $conexao): array {
     $stmt = $conexao->query("SELECT id_categoria_animal, nome_categoria FROM categoria_animais");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +20,6 @@ function obterCategoriasProdutos(PDO $conexao): array {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Buscar dados do produto
 try {
     $stmt = $conexao->prepare("SELECT * FROM produtos WHERE id_produto = ?");
     $stmt->execute([$id_produto]);
@@ -36,7 +34,6 @@ try {
     exit;
 }
 
-// Atualização do produto
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $descricao = $_POST['descricao'];
@@ -44,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $estoque = (int)$_POST['estoque'];
     $id_categoria_animal = $_POST['id_categoria_animal'];
     $id_categoria_produto = $_POST['id_categoria_produto'];
-    $imagem = $produto['imagem']; // manter imagem antiga como padrão
+    $imagem = $produto['imagem']; 
 
 if (!empty($_FILES['foto']['name'])) {
     $nome_arquivo = uniqid() . "_" . basename($_FILES['foto']['name']);
@@ -66,7 +63,6 @@ if (!empty($_FILES['foto']['name'])) {
             $nome, $descricao, $preco, $estoque, $id_categoria_animal, $id_categoria_produto, $imagem, $id_produto
         ]);
         echo "<p class='alert alert-success'>Produto atualizado com sucesso!</p>";
-        // Atualizar os dados carregados
         $produto = array_merge($produto, $_POST);
     } catch (PDOException $e) {
         echo "<p class='alert alert-danger'>Erro ao atualizar: " . $e->getMessage() . "</p>";

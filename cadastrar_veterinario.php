@@ -1,48 +1,41 @@
 <?php
-// Inicia a sessão para acessar o ID do usuário (se não já estiver iniciada por verificar_login.php)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Inclui os arquivos essenciais do seu sistema
-include "conexao.php";           // Sua conexão com o banco de dados ($conexao ou $pdo)
-include "dados_usuario.php";     // Para carregar dados do usuário logado (se necessário)
-include "verificar_login.php";   // Para verificar se o usuário está logado e garantir $_SESSION['id_usuario']
+include "conexao.php";           
+include "dados_usuario.php";     
+include "verificar_login.php";   
 
-// Redireciona se o usuário não estiver logado
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 
-$message = ''; // Variável para armazenar mensagens de status
-$message_type = ''; // 'success', 'error', 'info'
+$message = ''; 
+$message_type = ''; 
 
-// Processamento do formulário quando enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome_clinica = $_POST["nome_clinica"] ?? '';
     $endereco = $_POST["endereco"] ?? '';
     $telefone = $_POST["telefone"] ?? '';
     $latitude = $_POST["latitude"] ?? null;
     $longitude = $_POST["longitude"] ?? null;
-    $id_usuario = $_SESSION['id_usuario']; // Pega o ID do usuário da sessão
+    $id_usuario = $_SESSION['id_usuario']; 
 
-    // Validação básica
     if (empty($nome_clinica) || empty($endereco) || empty($telefone) || $latitude === null || $longitude === null) {
         $message = "Todos os campos obrigatórios (Nome da Clínica, Endereço, Telefone) devem ser preenchidos, e as coordenadas devem ser geradas automaticamente. Houve um problema na geocodificação.";
         $message_type = 'error';
     } else {
         try {
-            // Assumindo que sua conexão PDO é $conexao (como no seu código de pet)
+
             $stmt = $conexao->prepare("INSERT INTO veterinarios (nome_clinica, endereco, telefone, latitude, longitude, id_usuario) VALUES (?, ?, ?, ?, ?, ?)");
 
             $stmt->execute([$nome_clinica, $endereco, $telefone, $latitude, $longitude, $id_usuario]);
 
             $message = "Veterinário cadastrado com sucesso!";
             $message_type = 'success';
-            // Opcional: Redirecionar após o sucesso para evitar reenvio do formulário
-            // header("Location: lista_veterinarios.php?status=success");
-            // exit();
+            
 
         } catch (PDOException $e) {
             $message = "Erro ao cadastrar veterinário: " . $e->getMessage();
@@ -128,18 +121,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script>
         document.getElementById('cadastroForm').addEventListener('submit', function(event) {
-            // Impede o envio padrão do formulário para fazer a geocodificação primeiro
+            
             event.preventDefault(); 
 
             const endereco = document.getElementById('endereco').value;
             const cep = document.getElementById('cep').value;
-            // É uma boa prática incluir o país para geocodificação mais precisa
             const fullAddress = `${endereco}, CEP ${cep}, Brasil`; 
 
-            const statusMessageDiv = document.querySelector('.container > div[role="alert"]'); // Busca o div de mensagem existente
+            const statusMessageDiv = document.querySelector('.container > div[role="alert"]'); 
             let statusMessageP = statusMessageDiv ? statusMessageDiv.querySelector('p') : null;
 
-            if (!statusMessageP) { // Se não existir, cria um novo div de mensagem
+            if (!statusMessageP) { 
                 const newDiv = document.createElement('div');
                 newDiv.className = "mb-4 px-4 py-3 rounded relative border alert-info";
                 newDiv.setAttribute('role', 'alert');
@@ -151,8 +143,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             statusMessageP.textContent = 'Buscando coordenadas do endereço...';
 
-
-            // Verifica se a API do Google Maps está carregada
             if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.Geocoder === 'undefined') {
                 statusMessageDiv.className = "mb-4 px-4 py-3 rounded relative border alert-error";
                 statusMessageP.textContent = 'Erro: Google Maps API não carregada corretamente. Verifique sua chave e conexão.';

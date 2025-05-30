@@ -86,12 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php endif; ?>
                     <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                         <div class="form-group mb-3">
-                            <!--<label class="form-label" for="email">E-mail:</label>-->
                             <input class="form-control" type="email" id="email" name="email" placeholder="e-mail" required>
 
                         </div>
                         <div class="form-group mb-3">
-                            <!--<label class="form-label" for="senha">Senha:</label>-->
                             <input class="form-control" type="password" id="senha" name="senha" placeholder="senha" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Entrar</button>

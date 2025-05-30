@@ -8,13 +8,13 @@ $link_boleto = $_SESSION['link_boleto'] ?? null;
 $barcode_boleto = $_SESSION['barcode_boleto'] ?? null;
 $mensagem_sucesso = $_SESSION['mensagem_loja'] ?? null;
 
-// Limpar mensagens da sessão para não exibir novamente
+
 unset($_SESSION['link_boleto']);
 unset($_SESSION['barcode_boleto']);
 unset($_SESSION['mensagem_loja']);
 
 if (!$link_boleto) {
-    // Se não houver link do boleto na sessão, redireciona para a loja ou carrinho
+    
     header("Location: loja_virtual.php");
     exit();
 }
@@ -64,7 +64,7 @@ if (!$link_boleto) {
         document.getElementById('copyBarcode').addEventListener('click', function() {
             var barcodeInput = this.previousElementSibling;
             barcodeInput.select();
-            barcodeInput.setSelectionRange(0, 99999); // For mobile devices
+            barcodeInput.setSelectionRange(0, 99999); 
             document.execCommand("copy");
             alert("Código de barras copiado!");
         });

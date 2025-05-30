@@ -33,18 +33,18 @@ function buscarMeusPets($conexao, $id_usuario) {
                     pp.nome,
                     pp.especie,
                     pp.raca,
-                    NULL AS idade, -- PetsPerdidos não tem idade no seu schema
-                    NULL AS porte, -- PetsPerdidos não tem porte no seu schema
-                    pp.status_perda AS status, -- Usar status_perda para pets perdidos
+                    NULL AS idade, 
+                    NULL AS porte, 
+                    pp.status_perda AS status, 
                     pp.foto,
                     'Perdi Meu Pet' as tipo_postagem
                 FROM PetsPerdidos pp
-                WHERE pp.id_usuario = ? AND pp.status_perda IN ('Perdido', 'Encontrado') -- Incluir apenas pets perdidos (perdido ou encontrado)
+                WHERE pp.id_usuario = ? AND pp.status_perda IN ('Perdido', 'Encontrado')
                 ORDER BY id_pet_principal DESC";
 
 
         $stmt = $conexao->prepare($sql);
-        $stmt->execute([$id_usuario, $id_usuario]); // Passa o ID do usuário duas vezes, uma para cada parte do UNION
+        $stmt->execute([$id_usuario, $id_usuario]); 
         $pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $pets;
     } catch (PDOException $e) {
@@ -62,7 +62,7 @@ function contarPostagens($conexao, $id_usuario) {
                     SUM(CASE WHEN pp.status_perda = 'Encontrado' THEN 1 ELSE 0 END) as encontrados,
                     SUM(CASE WHEN p.status = 'Adotado' THEN 1 ELSE 0 END) as adotados
                 FROM pets p
-                LEFT JOIN PetsPerdidos pp ON p.id_pet = pp.id_pet -- Correção: o join deve ser pelo id_pet da tabela Pets
+                LEFT JOIN PetsPerdidos pp ON p.id_pet = pp.id_pet 
                 WHERE p.id_usuario = ?"; 
 
         $stmt = $conexao->prepare($sql);

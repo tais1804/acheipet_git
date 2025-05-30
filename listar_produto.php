@@ -17,9 +17,9 @@ function deletarProduto($conexao, $id_produto) {
 if (isset($_GET['deletar'])) {
     $id_produto = $_GET['deletar'];
     if (deletarProduto($conexao, $id_produto)) {
-        echo "<p style='color:green;'>Produto deletado com sucesso!</p>"; // Feedback de sucesso
+        echo "<p style='color:green;'>Produto deletado com sucesso!</p>"; 
     } else {
-        echo "<p style='color:red;'>Erro ao deletar produto.</p>"; // Feedback de erro
+        echo "<p style='color:red;'>Erro ao deletar produto.</p>"; 
     }
 }
 
@@ -38,7 +38,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Lista de Produtos</title>
-    <!-- Bootstrap 5 CDN -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
@@ -92,7 +92,7 @@ try {
     <br/><br/><br/>
 </div>
 
-<!-- Bootstrap JS (opcional, apenas se você usar componentes interativos) -->
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
