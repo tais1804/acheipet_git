@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .alert-info { background-color: #DBEAFE; border-color: #60A5FA; color: #1E40AF; } /* Tailwind blue-100, blue-400, blue-800 */
     </style>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_AQUI&libraries=places"></script>
+    
 </head>
 <body>
     <div id="webcrumbs">
@@ -107,9 +108,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="telefone" class="block text-gray-700 text-sm font-bold mb-2">Telefone:</label>
                         <input type="text" id="telefone" name="telefone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required value="<?php echo htmlspecialchars($telefone ?? ''); ?>">
                     </div>
-                    
-                    <input type="hidden" id="latitude" name="latitude" value="<?php echo htmlspecialchars($latitude ?? ''); ?>">
-                    <input type="hidden" id="longitude" name="longitude" value="<?php echo htmlspecialchars($longitude ?? ''); ?>">
+                    <div class="mb-4">
+                        <label for="telefone" class="block text-gray-700 text-sm font-bold mb-2">Latitude:</label>
+                    <input type="text" id="latitude" name="latitude" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  required  value="<?php echo htmlspecialchars($latitude ?? ''); ?>">
+                    <label for="telefone" class="block text-gray-700 text-sm font-bold mb-2">Longitude:</label>
+                    <input type="text" id="longitude" name="longitude" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  required  value="<?php echo htmlspecialchars($longitude ?? ''); ?>">
+                    </div>
 
                     <div class="flex items-center justify-between">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -118,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </form>
             </div>
-            <?php include "footer.php"; // Se você tiver um footer.php, inclua aqui ?>
+            
         </div>
     </div>
 

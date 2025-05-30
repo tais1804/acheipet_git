@@ -1,3 +1,7 @@
+<?php
+include "conexao.php";
+include "dados_usuario.php"; 
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,9 +18,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
+
     </head>
 <body>
-    <div id="root"></div>
+<?php
+            include "header.php";
+            ?> 
+    
+    <div class="container  mt-5">
+        <div class="d-grid gap-2 col-3 mx-auto">
+            <a class="btn btn-primary" href="cadastrar_veterinario.php">Cadastrar veterinário</a>
+        </div>
+    <div id="root">
+        
+    </div>
+</div>
 
     <script type="text/babel">
         const MapComponent = () => {
@@ -215,5 +234,7 @@
 
         ReactDOM.createRoot(document.getElementById('root')).render(<MapComponent />);
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>
