@@ -8,7 +8,7 @@ include "dados_usuario.php";
 function obterCategoriasProdutos(PDO $conexao): array
 {
     try {
-        $stmt = $conexao->query("SELECT id_categoria_produto, nome_categoria FROM categoria_produtos");
+        $stmt = $conexao->query("SELECT id_categoria_produto, nome_categoria FROM categorias_produtos");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         error_log("Erro ao obter categorias de produtos: " . $e->getMessage());
