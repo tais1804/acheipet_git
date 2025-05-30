@@ -290,7 +290,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                                     <form method="post" action="loja_virtual.php" class="d-flex flex-column mb-2">
                                         <input type="hidden" name="id_produto" value="<?php echo $produto["id_produto"]; ?>">
                                         <div class="row">
-                                        <div class="col-4">
+                                        <div class="col-5">
 
                                             <div class="row">
                                                 <div class="col-4">
@@ -302,9 +302,9 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
                                             </div>
 
                                         </div>
-                                        <div class="col-8">
+                                        <div class="col-7">
                                         <?php if ($produto["estoque"] > 0) : ?>
-                                            <button type="submit" class="btn btn-success">Add ao Carrinho</button>
+                                            <button type="submit" class="btn btn-success">Add</button>
                                         <?php else : ?>
                                             <button type="button" class="btn btn-danger" disabled>Produto Esgotado</button>
                                         <?php endif; ?>
