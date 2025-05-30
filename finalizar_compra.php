@@ -7,8 +7,10 @@ include "config_efi.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Efi\Exception\EfiException;
 use Efi\EfiPay;
+
+$efi = new EfiPay($options);
+
 
 $erro_dados_cliente = false;
 $mensagem_erro_cliente = "";
@@ -28,7 +30,8 @@ if (!isset($usuario) || empty($usuario['id_usuario'])) {
 } else {
     $id_usuario = $usuario['id_usuario'];
     $nome_cliente = $usuario['nome'] ?? '';
-    $cpf_cliente = $usuario['cpf'] ?? '';
+    // ...
+    $cpf_cliente = $usuario['cpf'] ?? ''; 
     $email_cliente = $usuario['email'] ?? '';
     $telefone_cliente = $usuario['telefone'] ?? '';
     $endereco_cliente = $usuario['endereco'] ?? ''; 
@@ -283,7 +286,6 @@ if (!$erro_dados_cliente) {
 </head>
 <body>
     <?php include "header.php"; ?>
-
     <div class="container mt-5">
         <h1 class="text-center mb-4 text-primary">Finalizar Compra</h1>
 
