@@ -1,5 +1,13 @@
 {
-    "require": {
-        "gerencianet/gerencianet-sdk-php": "^5.1"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/efipay/efipay-php"
     }
+  ],
+  "require": {
+    "efipay/efipay-php": "dev-main"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

@@ -58,7 +58,8 @@ if (isset($_POST["deslogar"])) {
         <p><strong>Email:</strong> <?php echo htmlspecialchars($usuario["email"]); ?></p>
         <p><strong>Endereço:</strong> <?php echo htmlspecialchars($usuario["endereco"]); ?></p>
         <p><strong>Telefone:</strong> <?php echo htmlspecialchars($usuario["telefone"]); ?></p>
-        <p><strong>CPF:</strong> <?php echo htmlspecialchars($usuario["cpf"]); ?></p> <p><strong>Tipo de Usuário:</strong> <?php echo htmlspecialchars($usuario["tipo_usuario"]); ?></p>
+        <p><strong>CPF:</strong> <?php echo htmlspecialchars($usuario["cpf"]); ?></p> 
+        <p><strong>Tipo de Usuário:</strong> <?php echo htmlspecialchars($usuario["tipo_usuario"]); ?></p>
     </div>
 
     <div class="mt-4 d-flex">
