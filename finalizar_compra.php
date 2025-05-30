@@ -28,14 +28,12 @@ if (!isset($usuario) || empty($usuario['id_usuario'])) {
 } else {
     $id_usuario = $usuario['id_usuario'];
     $nome_cliente = $usuario['nome'] ?? '';
-    // ...
     $cpf_cliente = $usuario['cpf'] ?? ''; 
     $email_cliente = $usuario['email'] ?? '';
     $telefone_cliente = $usuario['telefone'] ?? '';
     $endereco_cliente = $usuario['endereco'] ?? ''; 
 
-    // Validação de campos essenciais para a Efí
-    // Ajustado para usar o campo 'endereco' unificado
+    
     if (empty($nome_cliente) || empty($email_cliente) || empty($telefone_cliente) || empty($endereco_cliente)) {
         $erro_dados_cliente = true;
         $mensagem_erro_cliente = "Seus dados de cadastro (nome, email, telefone, endereço) estão incompletos. Por favor, preencha-os no seu perfil.";
@@ -54,7 +52,7 @@ if (!isset($usuario) || empty($usuario['id_usuario'])) {
     }
 }
 
-// Variáveis para armazenar o link do boleto e PIX
+
 $link_boleto = null;
 $barcode_boleto = null;
 $qr_code_pix_image = null;
