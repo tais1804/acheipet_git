@@ -7,7 +7,7 @@ include "config_efi.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Efi\EfiPay;
+use EfiPay\EfiPay;
 
 $efi = new EfiPay($options);
 
