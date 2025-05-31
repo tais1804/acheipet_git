@@ -1,11 +1,10 @@
 
 <?php
-// Certifique-se de que a sessão do carrinho está inicializada
+
 if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = array();
 }
 
-// Conta total de itens no carrinho (somando as quantidades de cada produto)
 $total_itens_carrinho = 0;
 foreach ($_SESSION['carrinho'] as $produto) {
     $total_itens_carrinho += $produto['quantidade'];

@@ -7,7 +7,7 @@ include "config_efi.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Efi\EfiPay;
+use EfiPay\EfiPay;
 
 $efi = new EfiPay($options);
 
@@ -21,23 +21,19 @@ if (!isset($_SESSION['carrinho']) || empty($_SESSION['carrinho'])) {
     exit();
 }
 
-// Obter e Validar dados do usuário logado
-// Assumindo que 'dados_usuario.php' popula a variável $usuario com os campos do seu banco de dados:
-// id_usuario, nome, email, telefone, cpf, endereco, data_nascimento, tipo_usuario
+
 if (!isset($usuario) || empty($usuario['id_usuario'])) {
     $erro_dados_cliente = true;
     $mensagem_erro_cliente = "Usuário não logado ou dados de cadastro incompletos. Por favor, faça login ou complete seu perfil.";
 } else {
     $id_usuario = $usuario['id_usuario'];
     $nome_cliente = $usuario['nome'] ?? '';
-    // ...
     $cpf_cliente = $usuario['cpf'] ?? ''; 
     $email_cliente = $usuario['email'] ?? '';
     $telefone_cliente = $usuario['telefone'] ?? '';
     $endereco_cliente = $usuario['endereco'] ?? ''; 
 
-    // Validação de campos essenciais para a Efí
-    // Ajustado para usar o campo 'endereco' unificado
+    
     if (empty($nome_cliente) || empty($email_cliente) || empty($telefone_cliente) || empty($endereco_cliente)) {
         $erro_dados_cliente = true;
         $mensagem_erro_cliente = "Seus dados de cadastro (nome, email, telefone, endereço) estão incompletos. Por favor, preencha-os no seu perfil.";
@@ -56,7 +52,7 @@ if (!isset($usuario) || empty($usuario['id_usuario'])) {
     }
 }
 
-// Variáveis para armazenar o link do boleto e PIX
+
 $link_boleto = null;
 $barcode_boleto = null;
 $qr_code_pix_image = null;
@@ -64,7 +60,7 @@ $qr_code_pix_text = null;
 $valor_pix = null;
 $data_expiracao_pix = null;
 
-// Só tenta processar se não houver erros nos dados do cliente
+
 if (!$erro_dados_cliente) {
 
     $total_compra = 0;
@@ -80,23 +76,18 @@ if (!$erro_dados_cliente) {
         ];
     }
 
-    // Dados do pagador (customer) para a API da Efí
-    // NOTA: A API da Efí espera campos de endereço mais detalhados.
-    // Como seu banco de dados tem um campo 'endereco' unificado,
-    // os campos 'number', 'neighborhood', 'zipcode', 'city' e 'state'
-    // serão enviados como vazios. Isso pode causar erros se a Efí
-    // exigir esses campos preenchidos ou em formatos específicos.
+    
     $customer = [
         'name'          => $nome_cliente,
         'cpf'           => $cpf_limpo,
         'email'         => $email_cliente,
         'phone_number'  => $telefone_limpo,
-        'address'       => $endereco_cliente, // Usando o campo 'endereco' do seu DB
-        'number'        => '', // Não disponível no seu DB de usuário
-        'neighborhood'  => '', // Não disponível no seu DB de usuário
-        'zipcode'       => '', // Não disponível no seu DB de usuário
-        'city'          => '', // Não disponível no seu DB de usuário
-        'state'         => '', // Não disponível no seu DB de usuário
+        'address'       => $endereco_cliente, 
+        'number'        => '', // Não disponível no DB de usuário
+        'neighborhood'  => '', // Não disponível no DB de usuário
+        'zipcode'       => '', // Não disponível no DB de usuário
+        'city'          => '', // Não disponível no DB de usuário
+        'state'         => '', // Não disponível no DB de usuário
     ];
 
     $options = [
@@ -112,7 +103,7 @@ if (!$erro_dados_cliente) {
     try {
         $efi = new EfiPay($options);
 
-        // Tentar gerar Boleto
+
         $body_boleto = [
             'items' => $items,
             'shippings' => [
