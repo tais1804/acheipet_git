@@ -3,8 +3,8 @@
 <?php
 session_start();
 include "conexao.php"; 
-include "dados_usuario.php"; 
 include "verificar_login.php"; 
+include "dados_usuario.php"; 
 
 
 if (!isset($_SESSION['carrinho'])) {
@@ -114,7 +114,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'nome' => $produto['nome'],
                         'preco' => $produto['preco'],
                         'quantidade' => $quantidade,
-                        'imagem' => $produto['imagem'] ?? 'caminho/para/imagem_padrao.jpg' // Adicionar imagem ao carrinho
+                        'imagem' => !empty($produto['imagem']) ? $produto['imagem'] : 'images/imagem_padrao.jpg'
+
                     );
                     echo "<p class='alert alert-success'>Produto adicionado ao carrinho com sucesso!</p>";
                 }
