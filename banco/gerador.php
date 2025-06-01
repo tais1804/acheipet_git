@@ -1,4 +1,17 @@
 <?php
+ 
+ $dadosCarrinhoJSON = $_POST['dados_carrinho'] ?? null;
+
+if (!$dadosCarrinhoJSON) {
+    die("Erro: Nenhum dado de carrinho recebido.");
+}
+
+$dadosCarrinho = json_decode($dadosCarrinhoJSON, true);
+
+// Verifica se a decodificação funcionou
+if (!is_array($dadosCarrinho)) {
+    die("Erro: dados do carrinho estão em formato inválido.");
+}
 
 /**
  * Detailed endpoint documentation
@@ -22,13 +35,21 @@ $options = [
     "timeout" => 60,
 ];
 
-$items = [
-	[
-		"name" => "Cat nip",
-		"amount" => 1,
-		"value" => 7770
-	]
-];
+$items = [];
+
+foreach ($dadosCarrinho as $item) {
+    if (isset($item['nome'], $item['quantidade'], $item['preco']) && !empty($item['nome'])) {
+        $items[] = [
+            "name" => $item['nome'],
+            "amount" => (int) $item['quantidade'],
+            "value" => (int) ($item['preco'] * 100) // converter para centavos
+        ];
+    }
+}
+
+if (empty($items)) {
+    die("Erro: Nenhum item válido no carrinho.");
+}
 
 
 $metadata = [
@@ -37,8 +58,8 @@ $metadata = [
 ];
 
 $customer = [
-	"name" => "Gorbadoc Oldbuck",
-	"cpf" => "44762066036",
+	"name" => "Nome do Cliente",
+	"cpf" => "47700380031",
 	// "email" => "",
 	// "phone_number" => "",
 	// "birth" => "",
@@ -64,7 +85,7 @@ $configurations = [
 ];
 
 $bankingBillet = [
-	"expire_at" => "2030-01-01",
+	"expire_at" => "2025-06-01",
 	"message" => "A Achei Pet Pet Shop agradece a sua compra!",
 	"customer" => $customer,
 	"configurations" => $configurations
@@ -85,12 +106,18 @@ try {
 	$api = new EfiPay($options);
 	$response = $api->createOneStepCharge($params = [], $body);
 
-	if (isset($options["responseHeaders"]) && $options["responseHeaders"]) {
-		print_r("<pre>" . json_encode($response->body, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
-		print_r("<pre>" . json_encode($response->headers, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
-	} else {
-		print_r("<pre>" . json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
-	}
+	//var_dump($response['data']['billet_link']);
+	//echo "<img src='{$response['data']['pix']['qrcode_image']}' width='250'>";
+	echo "<script>window.open('{$response['data']['billet_link']}', '_blank');</script>";
+
+
+
+//	if (isset($options["responseHeaders"]) && $options["responseHeaders"]) {
+//		print_r("<pre>" . json_encode($response->body, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
+//		print_r("<pre>" . json_encode($response->headers, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
+//	} else {
+//		print_r("<pre>" . json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "</pre>");
+//	}
 } catch (EfiException $e) {
 	print_r($e->code . "<br>");
 	print_r($e->error . "<br>");

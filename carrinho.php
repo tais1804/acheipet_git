@@ -97,8 +97,6 @@ foreach ($_SESSION['carrinho'] as $produto) {
                                 
                                 <img width="80" class="img-thumbnail" src="<?php echo ltrim($produto['imagem'], '/'); ?>">
 
-                                    
-                                <p><?php echo ltrim($produto['imagem'], '/'); ?></p>
                                 
                             
                                 <h5 class="card-title"><?php echo $produto['nome']; ?></h5>
@@ -113,7 +111,11 @@ foreach ($_SESSION['carrinho'] as $produto) {
             </div>
             <div class="mt-4 text-end">
                 <h4>Total do Carrinho: <span class="text-success">R$ <?php echo number_format($total_carrinho, 2, ',', '.'); ?></span></h4>
-                <a href="finalizar_compra.php" class="btn btn-success mt-3">Finalizar Compra</a>
+                <form method="POST" action="banco/gerador.php">
+                    <input type="hidden" name="dados_carrinho" value='<?php echo json_encode($_SESSION["carrinho"], JSON_UNESCAPED_UNICODE); ?>'>
+                    <button name="sendAp" type="submit" class="btn btn-warning mt-3">Gerar Boleto</button>
+                </form>
+
             </div>
         <?php endif; ?>
     </div>
