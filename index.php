@@ -32,9 +32,9 @@
                                 Aqui você pode encontrar todo tipo de informação sobre adoção, doação e informações de
                                 animais desaparecidos.
                             </p>
-                            <div class="space-y-6 cards-opcoes">
+                            <div class="row">
                                 
-                                
+                                <div class="col-6">
                                     <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
                                         <a href="listar_pets.php" class="p-4 flex">
                                             <div class="mr-4">
@@ -48,8 +48,8 @@
                                             </div>
                                         </a>
                                     </div>
-                                
-
+                                </div>
+                                <div class="col-6">
                                     <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
                                         <a href="cadastrar_pet.php" class="p-4 flex">
                                             <div class="mr-4">
@@ -63,37 +63,43 @@
                                             </div>
                                         </a>
                                     </div>
-                                
-                                <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
-                                    <a href="cadastrar_pet_perdido.php" class="p-4 flex">
-                                        <div class="mr-4">
-                                            <img src="../img/img-gato.png" alt="Lost cat" class="" />
-                                        </div>
-                                        <div>
-                                            <h3 class="text-xl font-bold text-red-500">Perdi meu Pet!</h3>
-                                            <p class="text-gray-600">
-                                                Cadastre informações do seu pet perdido e sua última localização.
-                                            </p>
-                                        </div>
-                                    </a>
                                 </div>
-
-                                <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
-                                    <a href="listar_pet_perdido.php" class="p-4 flex">
-                                        <div class="mr-4">
-                                            <img src="../img/img-achei.png" alt="Lost cat" class="" />
-                                        </div>
-                                        <div>
-                                            <h3 class="text-xl font-bold text-red-500">Achei um pet!</h3>
-                                            <p class="text-gray-600">
-                                                Olhe na nossa lista de pets perdidos e veja se o pet que encontrou está nela!
-                                            </p>
-                                        </div>
-                                    </a>
-                                </div>
-
-
                             </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
+                                        <a href="cadastrar_pet_perdido.php" class="p-4 flex">
+                                            <div class="mr-4">
+                                                <img src="../img/img-gato.png" alt="Lost cat" class="" />
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-red-500">Perdi meu Pet!</h3>
+                                                <p class="text-gray-600">
+                                                    Cadastre informações do seu pet perdido e sua última localização.
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            
+                                <div class="col-6"> 
+                                    <div class="bg-white rounded-lg items-center hover:shadow-lg transition-shadow transform hover:translate-x-1">
+                                        <a href="listar_pet_perdido.php" class="p-4 flex">
+                                            <div class="mr-4">
+                                                <img src="../img/img-achei.png" alt="Lost cat" class="" />
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-red-500">Achei um pet!</h3>
+                                                <p class="text-gray-600">
+                                                    Olhe na nossa lista de pets perdidos e encontre o tutor!
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mt-10">
                                 <p class="text-white text-center mb-4">Patrocinadores</p>
                                 <div class="bg-red-400 bg-opacity-30 rounded-lg p-6 patro-img">

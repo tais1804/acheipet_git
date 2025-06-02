@@ -23,7 +23,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
     $historico_saude = $_POST["historico_saude"];
-    $foto = $_POST["foto"];
+    // Verifica se o usuário enviou um novo arquivo
+if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
+    $nome_arquivo = basename($_FILES['foto']['name']);
+    $caminho_destino = "uploads/" . $nome_arquivo;
+    
+    // Move o arquivo para a pasta uploads
+    if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminho_destino)) {
+        $foto = $caminho_destino;
+    } else {
+        echo "<p>Erro ao mover o arquivo de imagem.</p>";
+        $foto = $pet["foto"]; // mantém a antiga
+    }
+} else {
+    $foto = $pet["foto"]; // mantém a antiga
+}
+
     $status = $_POST["status"];
     $id_usuario = $_POST["id_usuario"];
 
@@ -68,7 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container">
     <div class="container mx-auto p-6">
     <h1>Editar Pet</h1>
-    <form class="" method="post" action="editar_pet.php?id=<?php echo $id_pet; ?>">
+    <form class="" method="post" enctype="multipart/form-data" action="editar_pet.php?id=<?php echo $id_pet; ?>">
+
         <div class="mb-3">
         <label class="form-label">Nome:</label class="form-label">
         <input class="form-control" type="text" name="nome" value="<?php echo $pet["nome"]; ?>"><br>
@@ -87,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label class="form-label">Histórico de Saúde:</label class="form-label">
         <textarea  class="form-control" name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
         <label class="form-label">Foto:</label class="form-label">
-        <input class="form-control" type="text" name="foto" value="<?php echo $pet["foto"]; ?>"><br>
+        <input class="form-control" type="file" name="foto" value="<?php echo $pet["foto"]; ?>"><br>
         <label class="form-label">Status:</label class="form-label"><br>
         <select class="form-select"  name="status">
             <option value="perdido" <?php if ($pet["status"] == "perdido") echo "selected"; ?>>Perdido</option>
@@ -95,6 +111,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <option value="encontrado" <?php if ($pet["status"] == "encontrado") echo "selected"; ?>>Encontrado</option>
         </select><br><br>
         <input class="btn btn-primary" type="submit" value="Salvar Alterações">
+        <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["id_usuario"]; ?>">
+
     </div>
     </form>
     </div>
