@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($id_produto && $quantidade > 0) {
         try {
-            $stmt = $conexao->prepare("SELECT id_produto, nome, preco, estoque FROM produtos WHERE id_produto = ?");
+            $stmt = $conexao->prepare("SELECT id_produto, nome, preco, estoque, imagem FROM produtos WHERE id_produto = ?");
             $stmt->execute([$id_produto]);
             $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -120,7 +120,8 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Virtual Petshop</title>
+    <title>Achei pet</title>
+    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
@@ -170,7 +171,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <?php include "header.php"; ?>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4 h2 text-primary">Loja Virtual Petshop</h1>
+    <h1 class="text-center mb-4 h2 text-primary">Loja Virtual AcheiPet</h1>
 
         <div class="d-flex d-grid gap-2 d-md-block justify-content-center mb-4">
             <a href="index.php" class="btn btn-outline-secondary">Página Inicial</a>
