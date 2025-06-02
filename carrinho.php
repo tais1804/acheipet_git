@@ -109,7 +109,6 @@ foreach ($_SESSION['carrinho'] as $produto) {
 <head>
     <meta charset="UTF-8">
     <title>Carrinho de Compras</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
