@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>Achei pet</title>
     <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    
     <style>
         @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
         @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);

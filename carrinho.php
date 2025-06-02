@@ -111,6 +111,7 @@ foreach ($_SESSION['carrinho'] as $produto) {
     <title>Achei pet</title>
     <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
 <body class="bg-light">

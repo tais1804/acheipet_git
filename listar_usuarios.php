@@ -27,6 +27,7 @@ try {
 <head>
     <title>Achei pet</title>
     <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    
 </head>
 <body>
     <h1>Listar Usuários</h1>
