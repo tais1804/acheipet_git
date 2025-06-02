@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($id_produto && $quantidade > 0) {
         try {
-            $stmt = $conexao->prepare("SELECT id_produto, nome, preco, estoque FROM produtos WHERE id_produto = ?");
+            $stmt = $conexao->prepare("SELECT id_produto, nome, preco, estoque, imagem FROM produtos WHERE id_produto = ?");
             $stmt->execute([$id_produto]);
             $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
