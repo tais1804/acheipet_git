@@ -45,7 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Adotar Pet</title>
+    <title>Achei pet</title>
+    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    
 </head>
 <body>
     <h1>Adotar Pet</h1>

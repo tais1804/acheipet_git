@@ -7,7 +7,9 @@ include "dados_usuario.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Veterinários Próximos</title>
+    <title>Achei pet</title>
+    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Open Sans', sans-serif; margin: 0; padding: 0; background-color: #f3f4f6; }

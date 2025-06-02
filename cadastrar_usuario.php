@@ -33,7 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cadastrar Usuário</title>
+    <title>Achei pet</title>
+    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    
     <a href="index.php">Home</a>
     <a href="login.php">Ir para Login</a>
 </head>
