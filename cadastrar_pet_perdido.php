@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data_perdido = $_POST["data_perdido"];
     $local_perdido = $_POST["local_perdido"];
     $descricao = $_POST["descricao"];
-    $telefone_contato = isset($_POST["telefone_contato"]) ? $_POST["telefone_contato"] : ''; 
+    $telefone_contato = $_POST["telefone_contato"]; //isset($_POST["telefone_contato"]) ? $_POST["telefone_contato"] : ''; 
     $status_perda = isset($_POST["status_perda"]) ? $_POST["status_perda"] : 'Perdido'; 
     $foto = $_FILES["foto"];
     $foto_nome = $foto["name"];
@@ -113,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
                             <div class="col-md-6"> 
                                 <label class="form-label">Telefone:</label><br>
-                                <input class="form-control" type="text" name="telfonetelefone_contato" required><br><br>
+                                <input class="form-control" type="text" name="telefone_contato" required><br><br>
 </div>
                         </div>
                         <div class="row">

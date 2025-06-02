@@ -29,9 +29,9 @@ use Efi\EfiPay;
 
 
 $options = [
-    "clientId" => "Client_Id_18304e582b8428a038875d1502e5b4a8cd50158b",
-    "clientSecret" => "Client_Secret_87d1082fb7e7deb32f7f3bfed1fee9086024ca2f",
-    "sandbox" => false,
+    "clientId" => "Client_Id_ef94544fb1f7e996c25991e60406eb0a938195bb",
+    "clientSecret" => "Client_Secret_bfd16067d196cd392ec3a06562fae10ca8b14ea6",
+    "sandbox" => true,
     "timeout" => 60,
 ];
 
@@ -85,7 +85,7 @@ $configurations = [
 ];
 
 $bankingBillet = [
-	"expire_at" => "2025-06-01",
+	"expire_at" => "2025-06-15",
 	"message" => "A Achei Pet Pet Shop agradece a sua compra!",
 	"customer" => $customer,
 	"configurations" => $configurations
@@ -108,7 +108,7 @@ try {
 
 	//var_dump($response['data']['billet_link']);
 	//echo "<img src='{$response['data']['pix']['qrcode_image']}' width='250'>";
-	echo "<script>window.open('{$response['data']['billet_link']}', '_blank');</script>";
+	echo "<script>window.open('{$response['data']['link']}', '_blank');</script>";
 
 
 
@@ -128,3 +128,6 @@ try {
 } catch (Exception $e) {
 	print_r($e->getMessage());
 }
+?>
+<meta http-equiv="refresh" content="1; URL='http://localhost/acheipet_git/carrinho.php'"/> <!-Define o redirecionamento, tempo e URL->
+<!--<a href="http://localhost/acheipet_git/carrinho.php" class="btn btn-secondary mt-3">Voltar ao Carrinho</a>-->
