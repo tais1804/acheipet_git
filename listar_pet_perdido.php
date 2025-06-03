@@ -2,6 +2,81 @@
 include "conexao.php";
 include "dados_usuario.php";
 include "verificar_login.php";
+
+// Inicializa variáveis de filtro
+$filtro_nome = '';
+$filtro_especie = '';
+$filtro_raca = '';
+$filtro_genero = '';
+$filtro_local = '';
+$filtro_telefone_contato = ''; // Nova variável para telefone_contato
+
+// Verifica se o formulário de filtro foi enviado
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['buscar'])) {
+    $filtro_nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
+    $filtro_especie = isset($_GET['especie']) ? trim($_GET['especie']) : '';
+    $filtro_raca = isset($_GET['raca']) ? trim($_GET['raca']) : '';
+    $filtro_genero = isset($_GET['genero']) ? trim($_GET['genero']) : '';
+    $filtro_local = isset($_GET['local_perdido']) ? trim($_GET['local_perdido']) : '';
+    $filtro_telefone_contato = isset($_GET['telefone_contato']) ? trim($_GET['telefone_contato']) : ''; // Pega o valor do telefone_contato
+}
+
+try {
+    // Monta a consulta SQL base
+    $sql = "SELECT * FROM PetsPerdidos WHERE 1=1"; // 1=1 para facilitar a adição de condições
+
+    $params = [];
+
+    // Adiciona condições de filtro se os valores forem fornecidos
+    if (!empty($filtro_nome)) {
+        $sql .= " AND nome LIKE ?";
+        $params[] = '%' . $filtro_nome . '%';
+    }
+    if (!empty($filtro_especie)) {
+        $sql .= " AND especie = ?";
+        $params[] = $filtro_especie;
+    }
+    if (!empty($filtro_raca)) {
+        $sql .= " AND raca LIKE ?";
+        $params[] = '%' . $filtro_raca . '%';
+    }
+    if (!empty($filtro_genero)) {
+        $sql .= " AND genero = ?";
+        $params[] = $filtro_genero;
+    }
+    if (!empty($filtro_local)) {
+        $sql .= " AND local_perdido LIKE ?";
+        $params[] = '%' . $filtro_local . '%';
+    }
+    if (!empty($filtro_telefone_contato)) { // Adiciona condição para telefone_contato
+        $sql .= " AND telefone_contato LIKE ?";
+        $params[] = '%' . $filtro_telefone_contato . '%';
+    }
+
+    // Ordena os resultados (ainda por data_perda, ou pode ser ajustado)
+    $sql .= " ORDER BY data_perda DESC";
+
+    $stmt = $conexao->prepare($sql);
+    $stmt->execute($params);
+    $petsPerdidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    echo "<p>Erro ao listar pets perdidos: " . $e->getMessage() . "</p>";
+    $petsPerdidos = []; // Garante que $petsPerdidos seja um array vazio em caso de erro
+}
+
+// Para popular os selects de filtro
+try {
+    $stmt_especies = $conexao->query("SELECT DISTINCT especie FROM categoria_animais ORDER BY nome_categoria");
+    $especies_disponiveis_temp = $stmt_especies->fetchAll(PDO::FETCH_COLUMN);
+    $especies_disponiveis = array_unique($especies_disponiveis_temp); // Garante espécies únicas
+
+    $stmt_generos = $conexao->query("SELECT DISTINCT genero FROM PetsPerdidos WHERE genero IS NOT NULL AND genero != '' ORDER BY genero");
+    $generos_disponiveis = $stmt_generos->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    $especies_disponiveis = [];
+    $generos_disponiveis = ['Macho', 'Fêmea', 'Não Informado']; // Opções padrão em caso de erro ou vazio
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,71 +101,116 @@ include "verificar_login.php";
 <body>
     <div id="webcrumbs">
         <div class="relative w-full min-h-screen">
-            <?php
-            include "header.php";
-            ?>
+            <?php include "header.php"; ?>
             
             <div id="webcrumbs">
-                <div class="relative col-lg-8 mx-auto min-h-screen">
+                <div class="relative col-lg-10 mx-auto min-h-screen">
                     <br/>
                     <h1 class="h1">Listar Pets Perdidos</h1>
                     <br/>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            Filtros de Pesquisa
+                        </div>
+                        <div class="card-body">
+                            <form method="GET" action="listar_pet_perdido.php">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="nome" class="form-label">Nome do Pet:</label>
+                                        <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($filtro_nome); ?>" placeholder="Nome do pet">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="especie" class="form-label">Espécie:</label>
+                                        <select class="form-select" id="especie" name="especie">
+                                            <option value="">Todas as Espécies</option>
+                                            <?php foreach ($especies_disponiveis as $especie): ?>
+                                                <option value="<?php echo htmlspecialchars($especie); ?>" <?php echo ($filtro_especie == $especie) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($especie); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="raca" class="form-label">Raça:</label>
+                                        <input type="text" class="form-control" id="raca" name="raca" value="<?php echo htmlspecialchars($filtro_raca); ?>" placeholder="Raça do pet">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="genero" class="form-label">Gênero:</label>
+                                        <select class="form-select" id="genero" name="genero">
+                                            <option value="">Todos os Gêneros</option>
+                                            <?php foreach ($generos_disponiveis as $genero): ?>
+                                                <option value="<?php echo htmlspecialchars($genero); ?>" <?php echo ($filtro_genero == $genero) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($genero); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="local_perdido" class="form-label">Local Perdido:</label>
+                                        <input type="text" class="form-control" id="local_perdido" name="local_perdido" value="<?php echo htmlspecialchars($filtro_local); ?>" placeholder="Cidade, bairro, etc.">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="telefone_contato" class="form-label">Telefone para Contato:</label>
+                                        <input type="text" class="form-control" id="telefone_contato" name="telefone_contato" value="<?php echo htmlspecialchars($filtro_telefone_contato); ?>" placeholder="(XX) XXXXX-XXXX">
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" name="buscar" class="btn btn-primary">Buscar</button>
+                                        <a href="listar_pet_perdido.php" class="btn btn-secondary">Limpar Filtros</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <div id="listarpet">
-                        <?php
-                        include "conexao.php";
-
-                        try {
-
-                            $stmt = $conexao->query("SELECT * FROM PetsPerdidos");
-                            $petsPerdidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                            if (count($petsPerdidos) > 0) {
-                                echo "<table border='1' class='table table-hover'>";
-                                echo "<tr>
-                                    <th>Nome</th>
-                                    <th>Espécie</th>
-                                    <th>Raça</th>
-                                    <th>Gênero</th> <th>Idade</th> <th>Data da Perda</th>
-                                    <th>Local Perdido</th>
-                                    <th>Descrição</th>
-                                    <th>Foto</th>
-                                    <th>Telefone Contato</th>
-                                    <th>Status Perda</th>
-                                </tr>";
-                                foreach ($petsPerdidos as $pet_perdido) {
-                                    echo "<tr>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["nome"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["especie"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["raca"]) . "</td>";
-                                    // Adicionando a célula para Gênero
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["genero"]) . "</td>";
-                                    // Modificando para exibir idade_valor e idade_unidade
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["idade_valor"]) . " " . htmlspecialchars($pet_perdido["idade_unidade"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["data_perda"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["local_perdido"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["descricao"]) . "</td>";
-
-                                    echo "<td class='align-middle'>";
-                                    $caminho_foto = $pet_perdido["foto"];
-                                    if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                        echo "<img class='fotopet' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet Perdido'>";
-                                    } else {
-                                        echo "Sem foto / Arquivo não encontrado";
-                                    }
-                                    echo "</td>";
-
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["telefone_contato"]) . "</td>";
-                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["status_perda"]) . "</td>";
-                                    echo "</tr>";
-                                }
-                                echo "</table>";
-                            } else {
-                                echo "<p>Nenhum pet perdido encontrado.</p>";
-                            }
-                        } catch (PDOException $e) {
-                            echo "<p>Erro ao listar pets perdidos: " . $e->getMessage() . "</p>";
-                        }
-                        ?>
+                        <?php if (count($petsPerdidos) > 0): ?>
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Espécie</th>
+                                        <th>Raça</th>
+                                        <th>Gênero</th>
+                                        <th>Idade</th>
+                                        <th>Data Perda</th>
+                                        <th>Local Perdido</th>
+                                        <th>Descrição</th>
+                                        <th>Foto</th>
+                                        <th>Contato</th>
+                                        <th>Status</th> </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($petsPerdidos as $pet_perdido): ?>
+                                        <tr>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["nome"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["especie"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["raca"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["genero"]); ?></td>
+                                            <td class="align-middle">
+                                                <?php echo htmlspecialchars($pet_perdido["idade_valor"]) . " " . htmlspecialchars($pet_perdido["idade_unidade"]); ?>
+                                            </td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["data_perda"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["local_perdido"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["descricao"]); ?></td>
+                                            <td class="align-middle">
+                                                <?php
+                                                $caminho_foto = $pet_perdido["foto"];
+                                                if (file_exists($caminho_foto) && !empty($caminho_foto)) {
+                                                    echo "<img class='fotopet' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet Perdido'>";
+                                                } else {
+                                                    echo "Sem foto";
+                                                }
+                                                ?>
+                                            </td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["telefone_contato"]); ?></td>
+                                            <td class="align-middle"><?php echo htmlspecialchars($pet_perdido["status_perda"]); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <p class="alert alert-info">Nenhum pet perdido encontrado com os filtros aplicados.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
