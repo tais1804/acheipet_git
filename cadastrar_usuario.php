@@ -1,87 +1,92 @@
 <?php
+// Inclui o arquivo de conexão. É CRÍTICO que 'conexao.php' DEFENDA $conexao como um objeto PDO válido.
 include "conexao.php"; 
 
+// Inicializa as variáveis de mensagem para o HTML
 $mensagem = "";
 $tipo_mensagem = "";
 
+// Inicializa $email_existe para evitar o warning se o formulário não for submetido via POST
+$email_existe = 0; 
+
+// A maioria do código de processamento DEVE estar DENTRO deste bloco POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST["nome"];
-    $email = $_POST["email"];
-    $senha_digitada = $_POST["senha"]; 
+    // É uma boa prática verificar se os campos POST existem antes de usá-los,
+    // especialmente se eles não são obrigatórios ou podem não vir.
+    // No seu caso, a maioria é 'required' no HTML, mas a validação no PHP é mais segura.
+    $nome = $_POST["nome"] ?? ''; // Usa o operador null coalescing para atribuir vazio se não existir
+    $email = $_POST["email"] ?? '';
+    $senha_digitada = $_POST["senha"] ?? '';
     $senha_hash = password_hash($senha_digitada, PASSWORD_DEFAULT); 
-    $endereco = $_POST["endereco"];
-    $telefone = $_POST["telefone"];
-    $cpf = $_POST["cpf"];
-    
-    // VERIFIQUE SE O CAMPO "data_nascimento" EXISTE ANTES DE ACESSÁ-LO
-    // SE VOCÊ ADICIONOU O CAMPO NO HTML COMO SUGERIDO, ELE SEMPRE EXISTIRÁ.
-    // MAS É UMA BOA PRÁTICA VERIFICAR PARA EVITAR WARNINGS SE O CAMPO PUDER SER OMITIDO.
-    $data_nascimento = isset($_POST["data_nascimento"]) ? $_POST["data_nascimento"] : null; 
-    
-    $tipo_usuario = $_POST["tipo_usuario"];
-    // REMOVA A LINHA ABAIXO, VOCÊ NÃO ACESSA FOTO VIA $_POST
-    // $foto = $_POST["foto"]; // <-- ESTA LINHA CAUSAVA O ERRO DA FOTO
+    $endereco = $_POST["endereco"] ?? '';
+    $telefone = $_POST["telefone"] ?? '';
+    $cpf = $_POST["cpf"] ?? '';
+    $data_nascimento = $_POST["data_nascimento"] ?? null; 
+    $tipo_usuario = $_POST["tipo_usuario"] ?? '';
 
-    // **1. Tratamento do upload da foto**
-    $foto_caminho = null; 
-
-    if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == UPLOAD_ERR_OK) {
-        $diretorio_uploads = "uploads/fotos_perfil/"; 
-        
-        if (!is_dir($diretorio_uploads)) {
-            mkdir($diretorio_uploads, 0777, true); 
-        }
-
-        $nome_arquivo_original = basename($_FILES["foto"]["name"]);
-        $extensao_arquivo = pathinfo($nome_arquivo_original, PATHINFO_EXTENSION);
-        $nome_arquivo_unico = uniqid() . "." . $extensao_arquivo; 
-        $caminho_destino = $diretorio_uploads . $nome_arquivo_unico;
-
-        if (move_uploaded_file($_FILES["foto"]["tmp_name"], $caminho_destino)) {
-            $foto_caminho = $caminho_destino; 
-        } else {
-            $mensagem = "Erro ao mover o arquivo de foto para o servidor.";
-            $tipo_mensagem = "danger";
-        }
-    } elseif (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == UPLOAD_ERR_NO_FILE) {
-        $foto_caminho = null; 
-    } else if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] != UPLOAD_ERR_NO_FILE) {
-        $mensagem = "Erro no upload da foto: Código " . $_FILES["foto"]["error"];
+    // Verifica se $conexao é um objeto PDO antes de tentar usá-lo
+    if (!isset($conexao) || !$conexao instanceof PDO) {
+        $mensagem = "Erro interno: Conexão com o banco de dados não estabelecida.";
         $tipo_mensagem = "danger";
-    }
+    } else {
+        // **1. Tratamento do upload da foto**
+        $foto_caminho = null; 
 
-    if (empty($mensagem)) { 
-        try {
-            $stmt_check_email = $conexao->prepare("SELECT COUNT(*) FROM Usuarios WHERE email = ?");
-            $stmt_check_email->execute([$email]);
-            $email_existe = $stmt_check_email->fetchColumn();
-
-            if ($email_existe > 0) {
-                $mensagem = "Este e-mail já está cadastrado. Por favor, use outro e-mail ou faça login.";
-                $tipo_mensagem = "warning";
-            } else {
-                // Certifique-se de incluir data_nascimento na sua query SQL, se ela for para ser armazenada no banco.
-                // A query abaixo não inclui data_nascimento, se você quiser armazená-la, adicione-a.
-                // Exemplo se você quiser adicionar data_nascimento:
-                // $stmt_usuarios = $conexao->prepare("INSERT INTO Usuarios (nome, email, senha, endereco, telefone, tipo_usuario, foto, data_nascimento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                // $stmt_usuarios->execute([$nome, $email, $senha_hash, $endereco, $telefone, $tipo_usuario, $foto_caminho, $data_nascimento]);
-
-                // Mantendo sua query original (sem data_nascimento no INSERT):
-                $stmt_usuarios = $conexao->prepare("INSERT INTO Usuarios (nome, email, senha, endereco, telefone, tipo_usuario, foto) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt_usuarios->execute([$nome, $email, $senha_hash, $endereco, $telefone, $tipo_usuario, $foto_caminho]);
-
-                $id_usuario = $conexao->lastInsertId();
-
-                $stmt_login = $conexao->prepare("INSERT INTO login (id_usuario, senha) VALUES (?, ?)");
-                $stmt_login->execute([$id_usuario, $senha_hash]); 
-
-                $mensagem = "Usuário cadastrado com sucesso!";
-                $tipo_mensagem = "success";
+        if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == UPLOAD_ERR_OK) {
+            $diretorio_uploads = "uploads/fotos_perfil/"; 
+            
+            if (!is_dir($diretorio_uploads)) {
+                mkdir($diretorio_uploads, 0777, true); 
             }
 
-        } catch (PDOException $e) {
-            $mensagem = "Erro ao cadastrar usuário: " . $e->getMessage();
+            $nome_arquivo_original = basename($_FILES["foto"]["name"]);
+            $extensao_arquivo = pathinfo($nome_arquivo_original, PATHINFO_EXTENSION);
+            $nome_arquivo_unico = uniqid() . "." . $extensao_arquivo; 
+            $caminho_destino = $diretorio_uploads . $nome_arquivo_unico;
+
+            if (move_uploaded_file($_FILES["foto"]["tmp_name"], $caminho_destino)) {
+                $foto_caminho = $caminho_destino; 
+            } else {
+                $mensagem = "Erro ao mover o arquivo de foto para o servidor.";
+                $tipo_mensagem = "danger";
+            }
+        } elseif (isset($_FILES["foto"]) && $_FILES["foto"]["error"] == UPLOAD_ERR_NO_FILE) {
+            $foto_caminho = null; 
+        } else if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] != UPLOAD_ERR_NO_FILE) {
+            $mensagem = "Erro no upload da foto: Código " . $_FILES["foto"]["error"];
             $tipo_mensagem = "danger";
+        }
+
+        // Se não houve erro no upload e a conexão está ok
+        if (empty($mensagem)) { 
+            try {
+                // **2. Verificação de e-mail duplicado**
+                $stmt_check_email = $conexao->prepare("SELECT COUNT(*) FROM Usuarios WHERE email = ?");
+                $stmt_check_email->execute([$email]);
+                $email_existe = $stmt_check_email->fetchColumn();
+
+                if ($email_existe > 0) {
+                    $mensagem = "Este e-mail já está cadastrado. Por favor, use outro e-mail ou faça login.";
+                    $tipo_mensagem = "warning";
+                } else {
+                    // Inserção na tabela Usuarios
+                    $stmt_usuarios = $conexao->prepare("INSERT INTO Usuarios (nome, email, senha, endereco, telefone, cpf, data_nascimento, tipo_usuario, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt_usuarios->execute([$nome, $email, $senha_hash, $endereco, $telefone, $cpf, $data_nascimento, $tipo_usuario, $foto_caminho]);
+
+                    $id_usuario = $conexao->lastInsertId();
+
+                    // Inserção na tabela login
+                    $stmt_login = $conexao->prepare("INSERT INTO login (id_usuario, senha) VALUES (?, ?)");
+                    $stmt_login->execute([$id_usuario, $senha_hash]); 
+
+                    $mensagem = "Usuário cadastrado com sucesso!";
+                    $tipo_mensagem = "success";
+                }
+
+            } catch (PDOException $e) {
+                $mensagem = "Erro ao cadastrar usuário: " . $e->getMessage();
+                $tipo_mensagem = "danger";
+            }
         }
     }
 }
@@ -99,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #f8f9fa; /* Light gray background */
+            background-color: #f8f9fa;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -115,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .card-title {
             font-family: 'Lato', sans-serif;
             font-weight: 700;
-            color: #0d6efd; /* Bootstrap primary color */
+            color: #0d6efd;
             margin-bottom: 25px;
         }
         .form-label {
@@ -163,11 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" class="form-control" id="nome" name="nome" required>
             </div>
             <div class="mb-3">
-                <label for="data_nascimento" class="form-label">Data de Nascimento:</label>
-                <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required>
-            </div>
-            <div class="mb-3">
-                <label for="nome" class="form-label">CPF:</label>
+                <label for="cpf" class="form-label">CPF:</label>
                 <input type="text" class="form-control" id="cpf" name="cpf" required>
             </div>
             <div class="mb-3">
@@ -185,6 +186,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="mb-3">
                 <label for="telefone" class="form-label">Telefone:</label>
                 <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required>
+            </div>
+            <div class="mb-3">
+                <label for="data_nascimento" class="form-label">Data de Nascimento:</label>
+                <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required>
             </div>
             <div class="mb-3">
                 <label for="foto" class="form-label">Foto do perfil:</label>
