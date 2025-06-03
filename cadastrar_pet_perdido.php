@@ -14,14 +14,14 @@ try {
     $categorias_animais = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categorias_animais = [];
-    // Opcional: registrar o erro ou exibir uma mensagem ao usuário se a consulta falhar
-    // error_log("Erro ao buscar categorias de animais: " . $e->getMessage());
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
-    $especie = $_POST["especie"]; // Este será o id_categoria_animal
+    $especie = $_POST["especie"]; 
     $raca = $_POST["raca"];
+    $idade_valor = $_POST["idade_valor"]; // Novo campo
+    $idade_unidade = $_POST["idade_unidade"]; // Novo campo
     $data_perdido = $_POST["data_perdido"];
     $local_perdido = $_POST["local_perdido"];
     $descricao = $_POST["descricao"];
@@ -51,8 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (move_uploaded_file($foto_temp, $foto_destino)) {
             try {
-                $stmt = $conexao->prepare("INSERT INTO PetsPerdidos (nome, especie, raca, data_perda, local_perdido, descricao, foto, telefone_contato, status_perda, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$nome, $especie, $raca, $data_perdido, $local_perdido, $descricao, $foto_destino, $telefone_contato, $status_perda, $id_usuario]);
+                // Modificado para incluir idade_valor e idade_unidade
+                $stmt = $conexao->prepare("INSERT INTO PetsPerdidos (nome, especie, raca, idade_valor, idade_unidade, data_perda, local_perdido, descricao, foto, telefone_contato, status_perda, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$nome, $especie, $raca, $idade_valor, $idade_unidade, $data_perdido, $local_perdido, $descricao, $foto_destino, $telefone_contato, $status_perpa, $id_usuario]);
                 echo "<p>Animal perdido cadastrado com sucesso!</p>";
                 header("Location: listar_pet_perdido.php");
                 exit();
@@ -118,30 +119,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <label class="form-label">Raça:</label><br>
                                 <input class="form-control" type="text" name="raca" required><br><br>
                             </div>
-                            <div class="col-md-6">    
-                                <label class="form-label">Data em que se perdeu</label><br>
-                                <input class="form-control" type="date" name="data_perdido" required><br><br>
+                            <div class="col-md-6">
+                                <label class="form-label">Idade:</label><br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input class="form-control" type="number" name="idade_valor" min="0" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-select" name="idade_unidade" required>
+                                            <option value="anos">Anos</option>
+                                            <option value="meses">Meses</option>
+                                        </select>
+                                    </div>
+                                </div><br><br>
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-6"> 
+                                <label class="form-label">Data em que se perdeu</label><br>
+                                <input class="form-control" type="date" name="data_perdido" required><br><br>
+                            </div>
                             <div class="col-md-6">      
                                 <label class="form-label">Local onde se perdeu</label><br>
                                 <input class="form-control" type="text" name="local_perdido" required><br><br>
-</div>
-                            <div class="col-md-6"> 
-                                <label class="form-label">Telefone:</label><br>
-                                <input class="form-control" type="text" name="telefone_contato" required><br><br>
-</div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6"> 
+                                <label class="form-label">Telefone:</label><br>
+                                <input class="form-control" type="text" name="telefone_contato" required><br><br>
+                            </div>
+                            <div class="col-md-6"> 
                                 <label class="form-label">Descrição</label><br>
                                 <textarea class="form-control" name="descricao"></textarea><br><br>
-</div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">Foto</label><br>
                                 <input class="form-control" type="file" name="foto" accept="image/*" required><br><br> 
-</div>
+                            </div>
                         </div>
 
                             <div class="col-md-auto d-grid gap-2 justify-content-md-end">

@@ -13,15 +13,14 @@ try {
     $categorias_animais = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categorias_animais = [];
-    // Opcional: registrar o erro ou exibir uma mensagem ao usuário se a consulta falhar
-    // error_log("Erro ao buscar categorias de animais: " . $e->getMessage());
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
-    $especie = $_POST["especie"]; // Este será o id_categoria_animal
+    $especie = $_POST["especie"];
     $raca = $_POST["raca"];
-    $idade = $_POST["idade"];
+    $idade_valor = $_POST["idade_valor"]; // Novo campo
+    $idade_unidade = $_POST["idade_unidade"]; // Novo campo
     $genero = $_POST["genero"];
     $porte = $_POST["porte"];
     $numero_contato = $_POST["telefone_contato"];
@@ -56,10 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (move_uploaded_file($foto_temp, $foto_destino)) {
             try {
+                // Modificado para incluir idade_valor e idade_unidade
+                $stmt = $conexao->prepare("INSERT INTO Pets (nome, especie, raca, idade_valor, idade_unidade, genero, porte, temperamento, vacinas, numero_contato, historico_saude, foto, status, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                $stmt = $conexao->prepare("INSERT INTO Pets (nome, especie, raca, genero, idade, porte, temperamento, vacinas, numero_contato, historico_saude, foto, status, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-                $stmt->execute([$nome, $especie, $raca, $genero, $idade, $porte, $temperamento, $vacinas, $numero_contato, $historico_saude, $foto_destino, $status, $id_usuario]);
+                $stmt->execute([$nome, $especie, $raca, $idade_valor, $idade_unidade, $genero, $porte, $temperamento, $vacinas, $numero_contato, $historico_saude, $foto_destino, $status, $id_usuario]);
                 echo "<p>Pet cadastrado com sucesso!</p>";
                 header("Location: meus_pets.php");
                 exit();
@@ -121,10 +120,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         </select><br><br>
                                         <label class="form-label">Raça:</label><br>
                                         <input class="form-control" type="text" name="raca" required>
-                                        <label class="form-label">Genero:</label><br>
+                                        <label class="form-label">Gênero:</label><br>
                                         <input class="form-control" type="text" name="genero" required> 
                                         <label class="form-label">Idade:</label><br>
-                                        <input class="form-control" type="number" name="idade" required>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input class="form-control" type="number" name="idade_valor" min="0" required>
+                                            </div>
+                                            <div class="col-6">
+                                                <select class="form-select" name="idade_unidade" required>
+                                                    <option value="anos">Anos</option>
+                                                    <option value="meses">Meses</option>
+                                                </select>
+                                            </div>
+                                        </div><br><br>
                                         <label class="form-label">Telefone para Contato:</label><br>
                                         <input class="form-control" type="text" name="telefone_contato" required>
                                         <label class="form-label">Porte:</label><br>
