@@ -47,7 +47,7 @@ include "verificar_login.php";
         }
         .card-img-achei {
             max-width: 100%;
-            height: 188px !important;
+            height: 267px !important;
         }
     </style>
 </head>
@@ -72,13 +72,13 @@ include "verificar_login.php";
                             $pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             if (count($pets) > 0) {
-                                echo "<div class='row'>";
+                                echo "<div class='row justify-content-md-center'>";
                                 foreach ($pets as $pet) {
-                                    echo "<div class='col'>";
+                                    echo "<div class='col-4'>";
                                     echo "<div class='card'>";
                                     $caminho_foto = $pet["foto"];
                                         if (file_exists($caminho_foto)) {
-                                            echo "<img class='card-img-top card-img-achei' src='" . $caminho_foto . "' alt='Foto do Pet'>";
+                                            echo "<img class='card-img-top card-img-achei object-fit-cover border rounded' src='" . $caminho_foto . "' alt='Foto do Pet'>";
                                         } else {
                                             echo "<p>Arquivo de imagem não encontrado: " . $caminho_foto . "</p>"; 
                                         }
