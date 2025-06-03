@@ -82,9 +82,9 @@ foreach ($_SESSION['carrinho'] as $produto) {
                             </svg>
                         </button>
                         <div class="relative, foto-home dropdown">
-                            <img src="../img/foto-user.png" data-bs-toggle="dropdown" alt="Profile" class=" dropdown-toggle h-10 w-10 rounded-full object-cover border-2 border-red-500 hover:border-red-600 transition-all transform hover:scale-105"/>
+                            <img src="<?php echo htmlspecialchars($usuario["foto"]); ?>" data-bs-toggle="dropdown" alt="Profile" class=" dropdown-toggle h-10 w-10 rounded-full object-cover border-2 border-red-500 hover:border-red-600 transition-all transform hover:scale-105"/>
                             <ul class="dropdown-menu">
-                                <li class="dropdown-item"> <p><?php echo $usuario["nome"]; ?></p></li>
+                                <li class="dropdown-item"> <a href="perfil_usuario.php"><p><?php echo $usuario["nome"]; ?></p></a></li>
                                 <li class="dropdown-item"><a href="meus_pets.php">Meus pets</a></li>
                                 <li class="dropdown-item">
                                     <form method="post" action="perfil_usuario.php">

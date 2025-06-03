@@ -12,7 +12,7 @@ if (!isset($_SESSION["id_usuario"])) {
 $id_usuario = $_SESSION["id_usuario"];
 
 try {
-    $stmt = $conexao->prepare("SELECT id_usuario, nome, email, endereco, telefone, cpf, tipo_usuario FROM usuarios WHERE id_usuario = ?");
+    $stmt = $conexao->prepare("SELECT id_usuario, nome, email, endereco, telefone, cpf, tipo_usuario, foto FROM usuarios WHERE id_usuario = ?");
     $stmt->execute([$id_usuario]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
