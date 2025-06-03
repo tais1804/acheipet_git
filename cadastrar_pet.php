@@ -86,13 +86,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             max-width: 100px;
             height: auto;
         }
+        .card-body {
+            padding: 28px !important;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="../css/estilo-achei-pet.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
-<body>
+<body class="align-items-center py-4 bg-body-tertiary">
     <div id="webcrumbs">
         <div class="relative w-full min-h-screen">
             <?php
@@ -102,11 +105,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div id="webcrumbs">
                     <div class="relative w-full min-h-screen row justify-content-md-center">
-                        <div class="col-md-10">
-                            <h1 class="h4"><br>Cadastrar Pet para doação</h1>
+                        <div class="col-md-8">
+                            <br>
+                            <div class="card">
+                                <div class="card-body">
+                            <h1 class="h4">Cadastrar Pet para doação</h1>
 
                             <form method="post" action="cadastrar_pet.php" enctype="multipart/form-data">
-                                <div class="g-2 row">
+                                <div class="g-3 row">
                                     <div class="col-md-8">
                                         <label class="form-label">Nome:</label><br>
                                         <input class="form-control" type="text" name="nome" required> 
@@ -184,9 +190,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </div>
                                 </div>
                                 
-                                <br/><br/>
+                                
                             </form>
-
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
