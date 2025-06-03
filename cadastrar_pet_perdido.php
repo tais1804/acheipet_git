@@ -20,8 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
     $especie = $_POST["especie"]; 
     $raca = $_POST["raca"];
-    $idade_valor = $_POST["idade_valor"]; // Novo campo
-    $idade_unidade = $_POST["idade_unidade"]; // Novo campo
+    $genero = $_POST["genero"]; // Novo campo
+    $idade_valor = $_POST["idade_valor"];
+    $idade_unidade = $_POST["idade_unidade"];
     $data_perdido = $_POST["data_perdido"];
     $local_perdido = $_POST["local_perdido"];
     $descricao = $_POST["descricao"];
@@ -51,9 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (move_uploaded_file($foto_temp, $foto_destino)) {
             try {
-                // Modificado para incluir idade_valor e idade_unidade
-                $stmt = $conexao->prepare("INSERT INTO PetsPerdidos (nome, especie, raca, idade_valor, idade_unidade, data_perda, local_perdido, descricao, foto, telefone_contato, status_perda, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$nome, $especie, $raca, $idade_valor, $idade_unidade, $data_perdido, $local_perdido, $descricao, $foto_destino, $telefone_contato, $status_perpa, $id_usuario]);
+                $stmt = $conexao->prepare("INSERT INTO PetsPerdidos (nome, especie, raca, genero, idade_valor, idade_unidade, data_perda, local_perdido, descricao, foto, telefone_contato, status_perda, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$nome, $especie, $raca, $genero, $idade_valor, $idade_unidade, $data_perdido, $local_perdido, $descricao, $foto_destino, $telefone_contato, $status_perda, $id_usuario]);
                 echo "<p>Animal perdido cadastrado com sucesso!</p>";
                 header("Location: listar_pet_perdido.php");
                 exit();
@@ -136,25 +136,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="row">
                             <div class="col-md-6"> 
+                                <label class="form-label">Gênero:</label><br>
+                                <select class="form-select" name="genero" required>
+                                    <option value="">Selecione o gênero</option>
+                                    <option value="Macho">Macho</option>
+                                    <option value="Fêmea">Fêmea</option>
+                                    <option value="Não Informado">Não Informado</option>
+                                </select><br><br>
+                            </div>
+                            <div class="col-md-6">      
                                 <label class="form-label">Data em que se perdeu</label><br>
                                 <input class="form-control" type="date" name="data_perdido" required><br><br>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">      
                                 <label class="form-label">Local onde se perdeu</label><br>
                                 <input class="form-control" type="text" name="local_perdido" required><br><br>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6"> 
                                 <label class="form-label">Telefone:</label><br>
                                 <input class="form-control" type="text" name="telefone_contato" required><br><br>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6"> 
                                 <label class="form-label">Descrição</label><br>
                                 <textarea class="form-control" name="descricao"></textarea><br><br>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">Foto</label><br>
                                 <input class="form-control" type="file" name="foto" accept="image/*" required><br><br> 

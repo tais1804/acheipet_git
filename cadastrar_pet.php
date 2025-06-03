@@ -19,10 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
     $especie = $_POST["especie"];
     $raca = $_POST["raca"];
-    $idade_valor = $_POST["idade_valor"]; // Novo campo
-    $idade_unidade = $_POST["idade_unidade"]; // Novo campo
+    $idade_valor = $_POST["idade_valor"];
+    $idade_unidade = $_POST["idade_unidade"];
     $genero = $_POST["genero"];
-    $porte = $_POST["porte"];
+    $porte = $_POST["porte"]; // Pegando o valor do select
     $numero_contato = $_POST["telefone_contato"];
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
@@ -55,7 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (move_uploaded_file($foto_temp, $foto_destino)) {
             try {
-                // Modificado para incluir idade_valor e idade_unidade
                 $stmt = $conexao->prepare("INSERT INTO Pets (nome, especie, raca, idade_valor, idade_unidade, genero, porte, temperamento, vacinas, numero_contato, historico_saude, foto, status, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 $stmt->execute([$nome, $especie, $raca, $idade_valor, $idade_unidade, $genero, $porte, $temperamento, $vacinas, $numero_contato, $historico_saude, $foto_destino, $status, $id_usuario]);
@@ -121,7 +120,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <label class="form-label">Raça:</label><br>
                                         <input class="form-control" type="text" name="raca" required>
                                         <label class="form-label">Gênero:</label><br>
-                                        <input class="form-control" type="text" name="genero" required> 
+                                        <select class="form-select" name="genero" required>
+                                            <option value="">Selecione o gênero</option>
+                                            <option value="Macho">Macho</option>
+                                            <option value="Fêmea">Fêmea</option>
+                                            <option value="Não Informado">Não Informado</option>
+                                        </select><br><br>
                                         <label class="form-label">Idade:</label><br>
                                         <div class="row">
                                             <div class="col-6">
@@ -137,7 +141,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <label class="form-label">Telefone para Contato:</label><br>
                                         <input class="form-control" type="text" name="telefone_contato" required>
                                         <label class="form-label">Porte:</label><br>
-                                        <input class="form-control" type="text" name="porte" required> 
+                                        <select class="form-select" name="porte" required>
+                                            <option value="">Selecione o porte</option>
+                                            <option value="Pequeno">Pequeno</option>
+                                            <option value="Médio">Médio</option>
+                                            <option value="Grande">Grande</option>
+                                        </select><br><br>
                                         <label class="form-label">Temperamento:</label><br>
                                         <textarea class="form-control" name="temperamento"></textarea> 
                                     </div>
