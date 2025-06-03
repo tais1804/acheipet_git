@@ -167,7 +167,7 @@ try {
                             Filtros de Pesquisa
                         </div>
                         <div class="card-body">
-                            <form method="GET" action="listar_pet.php">
+                            <form method="GET" action="listar_pets.php">
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="nome" class="form-label">Nome do Pet:</label>
@@ -227,7 +227,7 @@ try {
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" name="buscar" class="btn btn-primary">Buscar</button>
-                                        <a href="listar_pet.php" class="btn btn-secondary">Limpar Filtros</a>
+                                        <a href="listar_pets.php" class="btn btn-secondary">Limpar Filtros</a>
                                     </div>
                                 </div>
                             </form>
