@@ -8,13 +8,21 @@ if (!isset($_SESSION['id_usuario'])) {
     exit();
 }
 
+try {
+    $stmt_categorias = $conexao->query("SELECT id_categoria_animal, nome_categoria FROM categoria_animais ORDER BY nome_categoria");
+    $categorias_animais = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $categorias_animais = [];
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
     $especie = $_POST["especie"];
     $raca = $_POST["raca"];
-    $idade = $_POST["idade"];
+    $idade_valor = $_POST["idade_valor"];
+    $idade_unidade = $_POST["idade_unidade"];
     $genero = $_POST["genero"];
-    $porte = $_POST["porte"];
+    $porte = $_POST["porte"]; // Pegando o valor do select
     $numero_contato = $_POST["telefone_contato"];
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
@@ -47,10 +55,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (move_uploaded_file($foto_temp, $foto_destino)) {
             try {
+                $stmt = $conexao->prepare("INSERT INTO Pets (nome, especie, raca, idade_valor, idade_unidade, genero, porte, temperamento, vacinas, numero_contato, historico_saude, foto, status, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                $stmt = $conexao->prepare("INSERT INTO Pets (nome, especie, raca, genero, idade, porte, temperamento, vacinas, numero_contato, historico_saude, foto, status, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-                $stmt->execute([$nome, $especie, $raca, $genero, $idade, $porte, $temperamento, $vacinas, $numero_contato, $historico_saude, $foto_destino, $status, $id_usuario]);
+                $stmt->execute([$nome, $especie, $raca, $idade_valor, $idade_unidade, $genero, $porte, $temperamento, $vacinas, $numero_contato, $historico_saude, $foto_destino, $status, $id_usuario]);
                 echo "<p>Pet cadastrado com sucesso!</p>";
                 header("Location: meus_pets.php");
                 exit();
@@ -70,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 <head>
     <title>Achei pet</title>
-    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
     
     <style>
         @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
@@ -99,28 +106,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <form method="post" action="cadastrar_pet.php" enctype="multipart/form-data">
                                 <div class="mb-30 row">
                                     <div class="col">
-                                        <label  class="form-label">Nome:</label><br>
+                                        <label class="form-label">Nome:</label><br>
                                         <input class="form-control" type="text" name="nome" required> 
-                                        <label  class="form-label">Espécie:</label><br>
-                                        <input class="form-control" type="text" name="especie" required> 
-                                        <label  class="form-label">Raça:</label><br>
+                                        <label class="form-label">Espécie:</label><br>
+                                        <select class="form-select" name="especie" required>
+                                            <option value="">Selecione a espécie</option>
+                                            <?php foreach ($categorias_animais as $categoria): ?>
+                                                <option value="<?php echo htmlspecialchars($categoria['nome_categoria']); ?>">
+                                                    <?php echo htmlspecialchars($categoria['nome_categoria']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select><br><br>
+                                        <label class="form-label">Raça:</label><br>
                                         <input class="form-control" type="text" name="raca" required>
-                                        <label  class="form-label">Genero:</label><br>
-                                        <input class="form-control" type="text" name="genero" required> 
-                                        <label  class="form-label">Idade:</label><br>
-                                        <input class="form-control" type="number" name="idade" required>
-                                        <label  class="form-label">Telefone para Contato:</label><br>
-                                        <input class="form-control" type="number" name="telefone_contato" required> <label  class="form-label">Porte:</label><br>
-                                        <input class="form-control" type="text" name="porte" required> 
-                                        <label  class="form-label">Temperamento:</label><br>
+                                        <label class="form-label">Gênero:</label><br>
+                                        <select class="form-select" name="genero" required>
+                                            <option value="">Selecione o gênero</option>
+                                            <option value="Macho">Macho</option>
+                                            <option value="Fêmea">Fêmea</option>
+                                            <option value="Não Informado">Não Informado</option>
+                                        </select><br><br>
+                                        <label class="form-label">Idade:</label><br>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input class="form-control" type="number" name="idade_valor" min="0" required>
+                                            </div>
+                                            <div class="col-6">
+                                                <select class="form-select" name="idade_unidade" required>
+                                                    <option value="anos">Anos</option>
+                                                    <option value="meses">Meses</option>
+                                                </select>
+                                            </div>
+                                        </div><br><br>
+                                        <label class="form-label">Telefone para Contato:</label><br>
+                                        <input class="form-control" type="text" name="telefone_contato" required>
+                                        <label class="form-label">Porte:</label><br>
+                                        <select class="form-select" name="porte" required>
+                                            <option value="">Selecione o porte</option>
+                                            <option value="Pequeno">Pequeno</option>
+                                            <option value="Médio">Médio</option>
+                                            <option value="Grande">Grande</option>
+                                        </select><br><br>
+                                        <label class="form-label">Temperamento:</label><br>
                                         <textarea class="form-control" name="temperamento"></textarea> 
                                     </div>
                                     <div class="col">
-                                        <label  class="form-label">Vacinas:</label><br>
+                                        <label class="form-label">Vacinas:</label><br>
                                         <textarea class="form-control" name="vacinas"></textarea> 
-                                        <label  class="form-label">Histórico de Saúde:</label><br>
+                                        <label class="form-label">Histórico de Saúde:</label><br>
                                         <textarea class="form-control" name="historico_saude"></textarea> 
-                                        <label  class="form-label">Foto:</label><br>
+                                        <label class="form-label">Foto:</label><br>
                                         <input class="form-control" type="file" name="foto" accept="image/*" required>
                                     </div>
                                 </div>

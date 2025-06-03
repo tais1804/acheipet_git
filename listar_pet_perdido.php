@@ -10,7 +10,7 @@ include "verificar_login.php";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Achei pet</title>
-    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
     <style>
         @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
         @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
@@ -47,38 +47,40 @@ include "verificar_login.php";
                             if (count($petsPerdidos) > 0) {
                                 echo "<table border='1' class='table table-hover'>";
                                 echo "<tr>
-                                        
-                                        <th>Nome</th>
-                                        <th>Espécie</th>
-                                        <th>Raça</th>
-                                        <th>Data da Perda</th>
-                                        <th>Local Perdido</th>
-                                        <th>Descrição</th>
-                                        <th>Foto</th>
-                                        <th>Telefone Contato</th>
-                                        <th>Status Perda</th>
-                                       
-                                      </tr>";
+                                    <th>Nome</th>
+                                    <th>Espécie</th>
+                                    <th>Raça</th>
+                                    <th>Gênero</th> <th>Idade</th> <th>Data da Perda</th>
+                                    <th>Local Perdido</th>
+                                    <th>Descrição</th>
+                                    <th>Foto</th>
+                                    <th>Telefone Contato</th>
+                                    <th>Status Perda</th>
+                                </tr>";
                                 foreach ($petsPerdidos as $pet_perdido) {
                                     echo "<tr>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["nome"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["especie"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["raca"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["data_perda"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["local_perdido"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["descricao"] . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["nome"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["especie"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["raca"]) . "</td>";
+                                    // Adicionando a célula para Gênero
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["genero"]) . "</td>";
+                                    // Modificando para exibir idade_valor e idade_unidade
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["idade_valor"]) . " " . htmlspecialchars($pet_perdido["idade_unidade"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["data_perda"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["local_perdido"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["descricao"]) . "</td>";
 
                                     echo "<td class='align-middle'>";
                                     $caminho_foto = $pet_perdido["foto"];
                                     if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                        echo "<img class='fotopet' src='" . $caminho_foto . "' alt='Foto do Pet Perdido'>";
+                                        echo "<img class='fotopet' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet Perdido'>";
                                     } else {
                                         echo "Sem foto / Arquivo não encontrado";
                                     }
                                     echo "</td>";
 
-                                    echo "<td class='align-middle'>" . $pet_perdido["telefone_contato"] . "</td>";
-                                    echo "<td class='align-middle'>" . $pet_perdido["status_perda"] . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["telefone_contato"]) . "</td>";
+                                    echo "<td class='align-middle'>" . htmlspecialchars($pet_perdido["status_perda"]) . "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</table>";
@@ -231,7 +233,8 @@ include "verificar_login.php";
                 plugins: [],
                 important: "#webcrumbs"
             }
-        </script>
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>
