@@ -16,6 +16,18 @@ include "dados_usuario.php";
         h1, h2 { font-family: 'Lato', sans-serif; }
         #root { display: flex; justify-content: center; align-items: center; width: 100%; min-height: 100vh; }
         .map-container { width: 100%; border-radius: 0.75rem; overflow: hidden; }
+        div#root {
+                display: table;
+            }
+        .p-4.max-w-4xl.mx-auto.bg-white.rounded-lg.shadow-lg.my-8 {
+            margin: 0;
+            max-width: 100% !important;
+        }
+        h1.text-3xl.font-bold.text-center.mb-6.text-red-600 {
+            color: black;
+            font-weight: 400;
+            font-size: 1.6rem;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -34,6 +46,7 @@ include "dados_usuario.php";
         <div class="d-grid gap-2 col-3 mx-auto">
             <a class="btn btn-primary" href="cadastrar_veterinario.php">Cadastrar veterinário</a>
         </div>
+    </br>
     <div id="root">
         
     </div>
@@ -44,7 +57,7 @@ include "dados_usuario.php";
             const mapRef = React.useRef(null);
             const [map, setMap] = React.useState(null);
             const [userLocation, setUserLocation] = React.useState(null);
-            const [searchRadius, setSearchRadius] = React.useState(5000); 
+            const [searchRadius, setSearchRadius] = React.useState(60000); 
             const [loading, setLoading] = React.useState(true);
             const [error, setError] = React.useState(null);
             const [infoMessage, setInfoMessage] = React.useState(null);
@@ -92,14 +105,14 @@ include "dados_usuario.php";
                                 errorMessage += " Motivo desconhecido. Verifique as permissões do navegador e a conexão HTTPS.";
                             }
                             setError(errorMessage + " Usando localização padrão (Brasília).");
-                            setUserLocation({ lat: -15.7801, lng: -47.9292 }); 
+                            setUserLocation({ lat: -15.877572, lng: -48.071419 }); 
                             setLoading(false);
                         },
                         { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
                     );
                 } else {
                     setError("Geolocalização não é suportada por este navegador. Usando localização padrão (Brasília).");
-                    setUserLocation({ lat: -15.7801, lng: -47.9292 }); 
+                    setUserLocation({ lat: -15.877572, lng: -48.071419 }); 
                     setLoading(false);
                 }
             }, []);
@@ -116,7 +129,7 @@ include "dados_usuario.php";
 
                             const googleMap = new window.google.maps.Map(mapRef.current, {
                                 center: userLocation,
-                                zoom: 14,
+                                zoom: 13,
                                 gestureHandling: 'greedy',
                             });
                             setMap(googleMap);
@@ -224,7 +237,7 @@ include "dados_usuario.php";
                     <div
                         ref={mapRef}
                         className="w-full rounded-lg shadow-md map-container"
-                        style={{ height: '500px' }}
+                        style={{ height: '500px'}}
                         aria-label="Mapa de veterinários próximos"
                     ></div>
                     <p className="text-sm text-gray-500 mt-4 text-center">

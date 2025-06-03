@@ -106,8 +106,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $nome_pesquisa = $_GET['pesquisa'] ?? '';
-$id_categoria_animal_filtro = isset($_GET['categoria_animal']) ? (int)$_GET['categoria_animal'] : null;
-$id_categoria_produto_filtro = isset($_GET['categoria_produto']) ? (int)$_GET['categoria_produto'] : null;
+$id_categoria_animal_filtro = !empty($_GET['categoria_animal']) ? (int)$_GET['categoria_animal'] : null;
+$id_categoria_produto_filtro = !empty($_GET['categoria_produto']) ? (int)$_GET['categoria_produto'] : null;
+
 
 $produtos = obterProdutos($conexao, $nome_pesquisa, $id_categoria_animal_filtro, $id_categoria_produto_filtro);
 
@@ -122,7 +123,11 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Achei pet</title>
     <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
-    
+    <style>
+        .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4 {
+            padding-bottom: 100px;
+        }
+    </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
@@ -183,41 +188,43 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
         <div class="card mb-4 p-4 shadow-sm">
             <h5 class="card-title mb-3">Filtrar Produtos</h5>
             <form method="get" action="loja_virtual.php" class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="pesquisa" class="form-label">Nome do Produto:</label>
-                    <input type="text" id="pesquisa" name="pesquisa" class="form-control" value="<?php echo htmlspecialchars($nome_pesquisa); ?>" placeholder="Pesquisar por nome">
-                </div>
-                
-                <div class="col-md-3">
-                    <label for="categoria_animal" class="form-label">Para qual Animal?</label>
-                    <select id="categoria_animal" name="categoria_animal" class="form-select">
-                        <option value="">Todas as Raças</option>
-                        <?php foreach ($categorias_animais as $cat_animal): ?>
-                            <option value="<?php echo $cat_animal['id_categoria_animal']; ?>"
-                                <?php echo ($id_categoria_animal_filtro == $cat_animal['id_categoria_animal']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($cat_animal['nome_categoria']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+    <div class="col-md-4">
+        <label for="pesquisa" class="form-label">Nome do Produto:</label>
+        <input type="text" id="pesquisa" name="pesquisa" class="form-control" value="<?php echo htmlspecialchars($nome_pesquisa); ?>" placeholder="Pesquisar por nome">
+    </div>
+    
+    <div class="col-md-3">
+        <label for="categoria_animal" class="form-label">Para qual Animal?</label>
+        <select id="categoria_animal" name="categoria_animal" class="form-select">
+            <option value="">Todas as Raças</option>
+            <?php foreach ($categorias_animais as $cat_animal): ?>
+                <option value="<?php echo $cat_animal['id_categoria_animal']; ?>" <?php echo ($id_categoria_animal_filtro == $cat_animal['id_categoria_animal']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($cat_animal['nome_categoria']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
 
-                <div class="col-md-3">
-                    <label for="categoria_produto" class="form-label">Tipo de Produto?</label>
-                    <select id="categoria_produto" name="categoria_produto" class="form-select">
-                        <option value="">Todas as Categorias</option>
-                        <?php foreach ($categorias_produtos as $cat_produto): ?>
-                            <option value="<?php echo $cat_produto['id_categoria_produto']; ?>"
-                                <?php echo ($id_categoria_produto_filtro == $cat_produto['id_categoria_produto']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($cat_produto['nome_categoria']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-info">Buscar/Filtrar</button>
-                </div>
-            </form>
+    <div class="col">
+        <label for="categoria_produto" class="form-label">Tipo de Produto?</label>
+        <select id="categoria_produto" name="categoria_produto" class="form-select">
+            <option value="">Todas as Categorias</option>
+            <?php foreach ($categorias_produtos as $cat_produto): ?>
+                <option value="<?php echo $cat_produto['id_categoria_produto']; ?>" <?php echo ($id_categoria_produto_filtro == $cat_produto['id_categoria_produto']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($cat_produto['nome_categoria']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    
+    <div class="col d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary h-50 w-100">Buscar/Filtrar</button>
+        <a href="loja_virtual.php" class="btn btn-secondary h-50 w-100">Limpar Filtros</a>
+    </div>
+    
+    
+</form>
+
         </div>
 
         <?php if (empty($produtos)) : ?>
@@ -291,6 +298,6 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     </div>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 </body>
 </html>
