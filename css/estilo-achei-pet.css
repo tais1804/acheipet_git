@@ -30,6 +30,11 @@ body{
     height: 188px !important;
 }
 
+.img-home {
+    z-index: 10;
+    position: relative;
+}
+
 .form-signin {
     max-width: 430px;
     padding: 1rem;

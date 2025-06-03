@@ -12,6 +12,10 @@
         <style>
             @import url(https://fonts.googleapis.com/css2?family=Lato&display=swap);
             @import url(https://fonts.googleapis.com/css2?family=Open+Sans&display=swap);
+            .img-home {
+                z-index: 10;
+                position: relative;
+            }
         </style>
         <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
@@ -122,7 +126,7 @@
                             <img
                                 src="../img/mulher_capao.png"
                                 alt="Woman with puppy"
-                                class="max-h-[500px] object-cover rounded-lg"
+                                class="max-h-[500px] object-cover rounded-lg img-home"
                             />
                         </div>
                     </div>
