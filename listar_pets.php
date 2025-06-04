@@ -105,97 +105,113 @@ try {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Achei pet</title>
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
     <style>
-        .h5, h5 {
-            font-size: 1.25rem !important;
-            font-weight: 500 !important;
-        }
+    .h5,
+    h5 {
+        font-size: 1.25rem !important;
+        font-weight: 500 !important;
+    }
 
-        .card {
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+    .card {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 
-        .card img {
-            max-width: 100%;
-            height: auto;
-        }
+    .card img {
+        max-width: 100%;
+        height: auto;
+    }
 
-        .card-body {
-            padding: 15px;
-        }
+    .card-body {
+        padding: 15px;
+    }
 
-        .card-title {
-            font-size: 1.25rem;
-            margin-bottom: 10px;
-        }
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
 
-        .card-text {
-            margin-bottom: 10px;
-        }
-        .card-img-achei {
-            max-width: 100%;
-            height: 267px !important;
-            object-fit: cover; /* Para garantir que a imagem preencha o espaço sem distorcer */
-        }
+    .card-text {
+        margin-bottom: 10px;
+    }
+
+    .card-img-achei {
+        max-width: 100%;
+        height: 267px !important;
+        object-fit: cover;
+        /* Para garantir que a imagem preencha o espaço sem distorcer */
+    }
+
+    label.form-label {
+        margin-bottom: 0;
+        font-size: 0.8rem;
+        color: #787878;
+    }
+
+    .title {
+        margin-left: 11px;
+    }
     </style>
 </head>
+
 <body>
     <div id="webcrumbs">
         <div class="relative w-full min-h-screen">
             <?php include "header.php"; ?>
-            
-            <div id="webcrumbs">
-                <div class="relative col-lg-10 mx-auto min-h-screen"> 
-                    <br/>
-                    <h1 class="h1">Lista de pets para adoção</h1>
-                    <br/>
 
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            Filtros de Pesquisa
-                        </div>
+            <div id="webcrumbs">
+                <div class="relative col-lg-10 mx-auto min-h-screen">
+
+                    <div class=" mb-2">
                         <div class="card-body">
                             <form method="GET" action="listar_pets.php">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4 form-group">
                                         <label for="nome" class="form-label">Nome do Pet:</label>
-                                        <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($filtro_nome); ?>" placeholder="Nome do pet">
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                            value="<?php echo htmlspecialchars($filtro_nome); ?>"
+                                            placeholder="Nome do pet">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="especie" class="form-label">Espécie:</label>
                                         <select class="form-select" id="especie" name="especie">
                                             <option value="">Todas as Espécies</option>
                                             <?php foreach ($especies_disponiveis as $especie): ?>
-                                                <option value="<?php echo htmlspecialchars($especie); ?>" <?php echo ($filtro_especie == $especie) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($especie); ?>
-                                                </option>
+                                            <option value="<?php echo htmlspecialchars($especie); ?>"
+                                                <?php echo ($filtro_especie == $especie) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($especie); ?>
+                                            </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="raca" class="form-label">Raça:</label>
-                                        <input type="text" class="form-control" id="raca" name="raca" value="<?php echo htmlspecialchars($filtro_raca); ?>" placeholder="Raça do pet">
+                                        <input type="text" class="form-control" id="raca" name="raca"
+                                            value="<?php echo htmlspecialchars($filtro_raca); ?>"
+                                            placeholder="Raça do pet">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="genero" class="form-label">Gênero:</label>
                                         <select class="form-select" id="genero" name="genero">
                                             <option value="">Todos</option>
                                             <?php foreach ($generos_disponiveis as $genero): ?>
-                                                <option value="<?php echo htmlspecialchars($genero); ?>" <?php echo ($filtro_genero == $genero) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($genero); ?>
-                                                </option>
+                                            <option value="<?php echo htmlspecialchars($genero); ?>"
+                                                <?php echo ($filtro_genero == $genero) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($genero); ?>
+                                            </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -204,71 +220,86 @@ try {
                                         <select class="form-select" id="porte" name="porte">
                                             <option value="">Todos os Portes</option>
                                             <?php foreach ($portes_disponiveis as $porte): ?>
-                                                <option value="<?php echo htmlspecialchars($porte); ?>" <?php echo ($filtro_porte == $porte) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($porte); ?>
-                                                </option>
+                                            <option value="<?php echo htmlspecialchars($porte); ?>"
+                                                <?php echo ($filtro_porte == $porte) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($porte); ?>
+                                            </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label for="idade_valor" class="form-label">Idade (valor):</label>
-                                        <input type="number" class="form-control" id="idade_valor" name="idade_valor" value="<?php echo htmlspecialchars($filtro_idade_valor); ?>" placeholder="Ex: 2">
+                                    <div class="col-md-1">
+                                        <label for="idade_valor" class="form-label">Idade:</label>
+                                        <input type="number" class="form-control" id="idade_valor" name="idade_valor"
+                                            value="<?php echo htmlspecialchars($filtro_idade_valor); ?>"
+                                            placeholder="Ex: 2">
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="idade_unidade" class="form-label">Idade (unidade):</label>
+                                        <label for="idade_unidade" class="form-label">Tipo de Unidade:</label>
                                         <select class="form-select" id="idade_unidade" name="idade_unidade">
-                                            <option value="">Unidade</option>
+                                            <option value="">Ex.: meses</option>
                                             <?php foreach ($unidades_idade as $unidade): ?>
-                                                <option value="<?php echo htmlspecialchars($unidade); ?>" <?php echo ($filtro_idade_unidade == $unidade) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($unidade); ?>
-                                                </option>
+                                            <option value="<?php echo htmlspecialchars($unidade); ?>"
+                                                <?php echo ($filtro_idade_unidade == $unidade) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($unidade); ?>
+                                            </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-1 d-grid">
                                         <button type="submit" name="buscar" class="btn btn-primary">Buscar</button>
+                                    </div>
+                                    <div class="col-2 d-grid">
                                         <a href="listar_pets.php" class="btn btn-secondary">Limpar Filtros</a>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
+
+
+                    <h1 class="h4 title">Lista de pets para adoção</h1>
                     <div id="listarpet">
                         <?php if (count($pets) > 0): ?>
-                            <div class="row justify-content-md-center">
-                                <?php foreach ($pets as $pet): ?>
-                                    <div class="col-md-4 col-sm-6 mb-4"> 
-                                        <div class="card h-100"> 
-                                            <?php
-                                            $caminho_foto = $pet["foto"];
-                                            if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                                echo "<img class='card-img-top card-img-achei object-fit-cover border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
-                                            } else {
-                                                echo "<img class='card-img-top card-img-achei object-fit-cover border rounded' src='images/placeholder-pet.png' alt='Sem foto'>"; // Placeholder
-                                            }
-                                            ?>
-                                            <div class="card-body d-flex flex-column"> 
-                                                <h5 class="card-title"><?php echo htmlspecialchars($pet["nome"]); ?></h5>
-                                                <div><b>Idade:</b> <?php echo htmlspecialchars($pet["idade_valor"]) . " " . htmlspecialchars($pet["idade_unidade"]); ?></div>
-                                                <div><b>Espécie:</b> <?php echo htmlspecialchars($pet["especie"]); ?></div>
-                                                <div><b>Raça:</b> <?php echo htmlspecialchars($pet["raca"]); ?></div>
-                                                <div><b>Porte:</b> <?php echo htmlspecialchars($pet["porte"]); ?></div>
-                                                <div><b>Gênero:</b> <?php echo htmlspecialchars($pet["genero"]); ?></div>
-                                                <div><b>Tel.:</b> <?php echo htmlspecialchars($pet["numero_contato"]); ?></div>
-                                            </div>
+                        <div class="row justify-content-md-center">
+                            <?php foreach ($pets as $pet): ?>
+                            <div class="col-md-4 col-sm-6 mb-4">
+                                <div class="card h-100">
+                                    <?php
+                                                $caminho_foto = $pet["foto"];
+                                                if (file_exists($caminho_foto) && !empty($caminho_foto)) {
+                                                    echo "<img class='card-img-top card-img-achei object-fit-contain border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
+                                                } else {
+                                                    echo "<img class='card-img-top card-img-achei object-fit-contain border rounded' src='images/placeholder-pet.png' alt='Sem foto'>"; // Placeholder
+                                                }
+                                                ?>
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title"><?php echo htmlspecialchars($pet["nome"]); ?></h5>
+                                        <div><b>Idade:</b>
+                                            <?php echo htmlspecialchars($pet["idade_valor"]) . " " . htmlspecialchars($pet["idade_unidade"]); ?>
                                         </div>
+                                        <div><b>Espécie:</b> <?php echo htmlspecialchars($pet["especie"]); ?></div>
+                                        <div><b>Raça:</b> <?php echo htmlspecialchars($pet["raca"]); ?></div>
+                                        <div><b>Porte:</b> <?php echo htmlspecialchars($pet["porte"]); ?></div>
+                                        <div><b>Gênero:</b> <?php echo htmlspecialchars($pet["genero"]); ?></div>
+                                        <div><b>Tel.:</b> <?php echo htmlspecialchars($pet["numero_contato"]); ?></div>
                                     </div>
-                                <?php endforeach; ?>
+                                </div>
                             </div>
+                            <?php endforeach; ?>
+                        </div>
                         <?php else: ?>
-                            <p class="alert alert-info">Nenhum pet para adoção encontrado com os filtros aplicados.</p>
+                        <p class="alert alert-info">Nenhum pet para adoção encontrado com os filtros aplicados.</p>
                         <?php endif; ?>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
+    </script>
 </body>
+
 </html>
