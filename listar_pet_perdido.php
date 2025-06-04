@@ -3,7 +3,7 @@ include "conexao.php";
 include "dados_usuario.php";
 include "verificar_login.php";
 
-// Inicializa variáveis de filtro
+
 $filtro_nome = '';
 $filtro_especie = '';
 $filtro_raca = '';
