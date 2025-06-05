@@ -1,5 +1,34 @@
 <?php
- 
+session_start();
+require_once(__DIR__ . '/../conexao.php');
+
+// Verifica se o usuário está logado
+if (!isset($_SESSION['id_usuario'])) {
+    die("Usuário não está logado.");
+}
+
+// Obtém o nome do usuário logado
+$id_usuario = $_SESSION['id_usuario'];
+
+try {
+    $stmt = $conexao->prepare("SELECT nome, cpf FROM usuarios WHERE id_usuario = :id");
+    $stmt->bindParam(':id', $id_usuario, PDO::PARAM_INT);
+    $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$usuario) {
+        die("Usuário não encontrado.");
+    }
+
+    $nome_usuario = $usuario['nome'];
+	$cpf_usuario = preg_replace('/[^0-9]/', '', $usuario['cpf']); // limpa o CPF
+
+
+} catch (PDOException $e) {
+    die("Erro ao consultar o banco de dados: " . $e->getMessage());
+}
+
+
  $dadosCarrinhoJSON = $_POST['dados_carrinho'] ?? null;
 
 if (!$dadosCarrinhoJSON) {
@@ -31,7 +60,7 @@ use Efi\EfiPay;
 $options = [
     "clientId" => "Client_Id_ef94544fb1f7e996c25991e60406eb0a938195bb",
     "clientSecret" => "Client_Secret_bfd16067d196cd392ec3a06562fae10ca8b14ea6",
-    "sandbox" => true,
+    "sandbox" => true, //ambiente de homologação
     "timeout" => 60,
 ];
 
@@ -54,28 +83,16 @@ if (empty($items)) {
 
 $metadata = [
 	"custom_id" => "Order_00001",
-	"notification_url" => "https://maykonsilveira.com.br/retorno/" //transação que identifica a compra
+	"notification_url" => "gerador/index.php" //transação que identifica a compra
 ];
 
+
 $customer = [
-	"name" => "Nome do Cliente",
-	"cpf" => "47700380031",
-	// "email" => "",
-	// "phone_number" => "",
-	// "birth" => "",
-	// "juridical_person" => [
-	// 	"corporate_name" => "Nome da Empresa",
-	// 	"cnpj" => "99794567000144"
-	// ],
-	// "address" => [
-	// 	"street" => "",
-	// 	"number" => "",
-	// 	"neighborhood" => "",
-	// 	"zipcode" => "",
-	// 	"city" => "",
-	// 	"complement" => "",
-	// 	"state" => ""
-	// ],
+    "name" => $nome_usuario,
+    "email" => "cliente@email.com",
+    "cpf" => $cpf_usuario,
+    "birth" => "1980-05-10",
+    "phone_number" => "11999999999"
 ];
 
 
@@ -93,7 +110,10 @@ $bankingBillet = [
 
 
 $payment = [
-	"banking_billet" => $bankingBillet,
+    "banking_billet" => [
+        "expire_at" => date('Y-m-d', strtotime('+3 days')),
+        "customer" => $customer
+    ]
 ];
 
 $body = [
@@ -129,5 +149,6 @@ try {
 	print_r($e->getMessage());
 }
 ?>
-<meta http-equiv="refresh" content="1; URL='http://localhost/acheipet_git/carrinho.php'"/> <!-Define o redirecionamento, tempo e URL->
+<meta http-equiv="refresh" content="1; URL='http://localhost/acheipet_git/carrinho.php'" />
+<!--Define o redirecionamento, tempo e URL-->
 <!--<a href="http://localhost/acheipet_git/carrinho.php" class="btn btn-secondary mt-3">Voltar ao Carrinho</a>-->
