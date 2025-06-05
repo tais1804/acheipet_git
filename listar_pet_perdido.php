@@ -3,31 +3,33 @@ include "conexao.php";
 include "dados_usuario.php";
 include "verificar_login.php";
 
-// Inicializa variáveis de filtro
+
 $filtro_nome = '';
 $filtro_especie = '';
 $filtro_raca = '';
 $filtro_genero = '';
 $filtro_local = '';
-$filtro_telefone_contato = ''; // Nova variável para telefone_contato
+$filtro_telefone_contato = '';
+$filtro_idade_valor = '';
+$filtro_idade_unidade = '';
 
 // Verifica se o formulário de filtro foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['buscar'])) {
-    $filtro_nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
-    $filtro_especie = isset($_GET['especie']) ? trim($_GET['especie']) : '';
-    $filtro_raca = isset($_GET['raca']) ? trim($_GET['raca']) : '';
-    $filtro_genero = isset($_GET['genero']) ? trim($_GET['genero']) : '';
-    $filtro_local = isset($_GET['local_perdido']) ? trim($_GET['local_perdido']) : '';
-    $filtro_telefone_contato = isset($_GET['telefone_contato']) ? trim($_GET['telefone_contato']) : ''; // Pega o valor do telefone_contato
+    $filtro_nome = isset($_GET['nome']) ? trim($_GET['nome']) : $filtro_nome;
+    $filtro_especie = isset($_GET['especie']) ? trim($_GET['especie']) : $filtro_especie;
+    $filtro_raca = isset($_GET['raca']) ? trim($_GET['raca']) : $filtro_raca;
+    $filtro_genero = isset($_GET['genero']) ? trim($_GET['genero']) : $filtro_genero;
+    $filtro_local = isset($_GET['local_perdido']) ? trim($_GET['local_perdido']) : $filtro_local;
+    $filtro_telefone_contato = isset($_GET['telefone_contato']) ? trim($_GET['telefone_contato']) : $filtro_telefone_contato;
+    $filtro_idade_valor = isset($_GET['idade_valor']) ? trim($_GET['idade_valor']) : $filtro_idade_valor;
+    $filtro_idade_unidade = isset($_GET['idade_unidade']) ? trim($_GET['idade_unidade']) : $filtro_idade_unidade;
 }
 
 try {
-    // Monta a consulta SQL base
-    $sql = "SELECT * FROM PetsPerdidos WHERE 1=1"; // 1=1 para facilitar a adição de condições
+    $sql = "SELECT * FROM PetsPerdidos WHERE 1=1";
 
     $params = [];
 
-    // Adiciona condições de filtro se os valores forem fornecidos
     if (!empty($filtro_nome)) {
         $sql .= " AND nome LIKE ?";
         $params[] = '%' . $filtro_nome . '%';
@@ -48,12 +50,23 @@ try {
         $sql .= " AND local_perdido LIKE ?";
         $params[] = '%' . $filtro_local . '%';
     }
-    if (!empty($filtro_telefone_contato)) { // Adiciona condição para telefone_contato
+    if (!empty($filtro_telefone_contato)) {
         $sql .= " AND telefone_contato LIKE ?";
         $params[] = '%' . $filtro_telefone_contato . '%';
     }
 
-    // Ordena os resultados (ainda por data_perda, ou pode ser ajustado)
+    if (!empty($filtro_idade_valor) && !empty($filtro_idade_unidade)) {
+        $sql .= " AND idade_valor = ? AND idade_unidade = ?";
+        $params[] = $filtro_idade_valor;
+        $params[] = $filtro_idade_unidade;
+    } elseif (!empty($filtro_idade_valor)) {
+        $sql .= " AND idade_valor = ?";
+        $params[] = $filtro_idade_valor;
+    } elseif (!empty($filtro_idade_unidade)) {
+        $sql .= " AND idade_unidade = ?";
+        $params[] = $filtro_idade_unidade;
+    }
+
     $sql .= " ORDER BY data_perda DESC";
 
     $stmt = $conexao->prepare($sql);
@@ -62,20 +75,30 @@ try {
 
 } catch (PDOException $e) {
     echo "<p>Erro ao listar pets perdidos: " . $e->getMessage() . "</p>";
-    $petsPerdidos = []; // Garante que $petsPerdidos seja um array vazio em caso de erro
+    $petsPerdidos = [];
 }
 
-// Para popular os selects de filtro
 try {
-    $stmt_especies = $conexao->query("SELECT DISTINCT especie FROM categoria_animais ORDER BY nome_categoria");
-    $especies_disponiveis_temp = $stmt_especies->fetchAll(PDO::FETCH_COLUMN);
-    $especies_disponiveis = array_unique($especies_disponiveis_temp); // Garante espécies únicas
+    $stmt_especies = $conexao->query("SELECT nome_categoria FROM categoria_animais ORDER BY nome_categoria");
+    $especies_disponiveis = $stmt_especies->fetchAll(PDO::FETCH_COLUMN);
+
+    if (empty($especies_disponiveis)) {
+        $especies_disponiveis = ['Cachorro', 'Gato', 'Ave', 'Roedor', 'Peixe', 'Repteis', 'Outros'];
+    }
 
     $stmt_generos = $conexao->query("SELECT DISTINCT genero FROM PetsPerdidos WHERE genero IS NOT NULL AND genero != '' ORDER BY genero");
     $generos_disponiveis = $stmt_generos->fetchAll(PDO::FETCH_COLUMN);
+    if (empty($generos_disponiveis)) {
+        $generos_disponiveis = ['Macho', 'Fêmea', 'Não Informado'];
+    }
+
+    // AQUI ESTÁ A MUDANÇA: Removendo 'dias'
+    $unidades_idade = ['meses', 'anos'];
+
 } catch (PDOException $e) {
-    $especies_disponiveis = [];
-    $generos_disponiveis = ['Macho', 'Fêmea', 'Não Informado']; // Opções padrão em caso de erro ou vazio
+    $especies_disponiveis = ['Cachorro', 'Gato', 'Ave', 'Roedor', 'Peixe', 'Repteis', 'Outros'];
+    $generos_disponiveis = ['Macho', 'Fêmea', 'Não Informado'];
+    $unidades_idade = ['meses', 'anos']; // Também removido aqui no fallback
 }
 ?>
 
@@ -95,7 +118,7 @@ try {
         }
     </style>
     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
 <body>
@@ -115,8 +138,8 @@ try {
                         </div>
                         <div class="card-body">
                             <form method="GET" action="listar_pet_perdido.php">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4 form-group">
                                         <label for="nome" class="form-label">Nome do Pet:</label>
                                         <input type="text" class="form-control" id="nome" name="nome" value="<?php echo htmlspecialchars($filtro_nome); ?>" placeholder="Nome do pet">
                                     </div>
@@ -135,13 +158,28 @@ try {
                                         <label for="raca" class="form-label">Raça:</label>
                                         <input type="text" class="form-control" id="raca" name="raca" value="<?php echo htmlspecialchars($filtro_raca); ?>" placeholder="Raça do pet">
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label for="genero" class="form-label">Gênero:</label>
                                         <select class="form-select" id="genero" name="genero">
                                             <option value="">Todos os Gêneros</option>
                                             <?php foreach ($generos_disponiveis as $genero): ?>
                                                 <option value="<?php echo htmlspecialchars($genero); ?>" <?php echo ($filtro_genero == $genero) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($genero); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="idade_valor" class="form-label">Idade:</label>
+                                        <input type="number" class="form-control" id="idade_valor" name="idade_valor" value="<?php echo htmlspecialchars($filtro_idade_valor); ?>" placeholder="Ex: 2">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="idade_unidade" class="form-label">Tipo de Unidade:</label>
+                                        <select class="form-select" id="idade_unidade" name="idade_unidade">
+                                            <option value="">Ex.: meses</option>
+                                            <?php foreach ($unidades_idade as $unidade): ?>
+                                                <option value="<?php echo htmlspecialchars($unidade); ?>" <?php echo ($filtro_idade_unidade == $unidade) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($unidade); ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
@@ -154,14 +192,18 @@ try {
                                         <label for="telefone_contato" class="form-label">Telefone para Contato:</label>
                                         <input type="text" class="form-control" id="telefone_contato" name="telefone_contato" value="<?php echo htmlspecialchars($filtro_telefone_contato); ?>" placeholder="(XX) XXXXX-XXXX">
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-1 d-grid">
                                         <button type="submit" name="buscar" class="btn btn-primary">Buscar</button>
+                                    </div>
+                                    <div class="col-2 d-grid">
                                         <a href="listar_pet_perdido.php" class="btn btn-secondary">Limpar Filtros</a>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
+
+                    <h1 class="h4 title">Lista de pets perdidos</h1>
                     <div id="listarpet">
                         <?php if (count($petsPerdidos) > 0): ?>
                             <table class="table table-hover table-striped">
@@ -177,7 +219,8 @@ try {
                                         <th>Descrição</th>
                                         <th>Foto</th>
                                         <th>Contato</th>
-                                        <th>Status</th> </tr>
+                                        <th>Status</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($petsPerdidos as $pet_perdido): ?>
@@ -355,6 +398,6 @@ try {
             }
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </body>
 </html>

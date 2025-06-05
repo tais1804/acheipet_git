@@ -3,7 +3,7 @@ include "conexao.php";
 include "dados_usuario.php";
 include "verificar_login.php";
 
-// Inicializa variáveis de filtro
+
 $filtro_nome = '';
 $filtro_especie = '';
 $filtro_raca = '';
@@ -11,9 +11,7 @@ $filtro_genero = '';
 $filtro_porte = '';
 $filtro_idade_valor = '';
 $filtro_idade_unidade = '';
-// REMOVIDO: $filtro_local = ''; // Para cidade/estado do pet
 
-// Verifica se o formulário de filtro foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['buscar'])) {
     $filtro_nome = isset($_GET['nome']) ? trim($_GET['nome']) : '';
     $filtro_especie = isset($_GET['especie']) ? trim($_GET['especie']) : '';
