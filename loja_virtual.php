@@ -11,6 +11,7 @@ if (!isset($_SESSION['carrinho'])) {
 function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_categoria_animal = null, ?int $id_categoria_produto = null): array
 {
     try {
+        
         $sql = "SELECT p.*, ca.nome_categoria AS nome_categoria_animal, cp.nome_categoria AS nome_categoria_produto 
                 FROM produtos p
                 LEFT JOIN categoria_animais ca ON p.id_categoria_animal = ca.id_categoria_animal

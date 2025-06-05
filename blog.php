@@ -88,6 +88,7 @@ try {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Achei pet - Blog</title>
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
@@ -100,22 +101,40 @@ try {
     .post-actions {
         margin-top: 10px;
     }
+
     .post-actions .btn {
         margin-right: 5px;
     }
+
     .card-blog {
         margin-bottom: 25px;
     }
+
     .card-title {
         margin-bottom: 0 !important;
     }
+
     label.form-label {
         margin-bottom: 0;
         font-size: 0.8rem;
         color: #787878;
     }
+
     .title {
         margin-left: 11px;
+    }
+
+    .form-post {
+
+        background-color: rgb(235 89 91);
+        margin: -16px 0 0 -4px;
+        border-radius: 8px;
+        padding: 30px;
+        color: white;
+    }
+
+    .blockquote-footer {
+        color: white;
     }
     </style>
 </head>
@@ -127,53 +146,24 @@ try {
         <div class="col-md-10">
             <div class="card">
                 <div class="card-body">
-                    <h1 class="h3">Blog Achei Pet!</h1><br>
 
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            Filtros do Blog
-                        </div>
-                        <div class="card-body">
-                            <form method="GET" action="blog.php">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <label for="titulo" class="form-label">Título do Post:</label>
-                                        <input type="text" class="form-control" id="titulo" name="titulo" value="<?php echo htmlspecialchars($filtro_titulo); ?>" placeholder="Buscar por título">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="tipo_pet" class="form-label">Tipo de Pet:</label>
-                                        <select class="form-select" id="tipo_pet" name="tipo_pet">
-                                            <option value="">Todos os Pets</option>
-                                            <?php foreach ($tipos_pet_disponiveis as $tipo_pet): ?>
-                                                <option value="<?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>" <?php echo ($filtro_tipo_pet == $tipo_pet['nome_categoria']) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="categoria_produto_blog" class="form-label">Categoria de Assunto:</label>
-                                        <select class="form-select" id="categoria_produto_blog" name="categoria_produto_blog">
-                                            <option value="">Todas as Categorias</option>
-                                            <?php foreach ($categorias_produto_disponiveis as $categoria_produto): ?>
-                                                <option value="<?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>" <?php echo ($filtro_categoria_produto_blog == $categoria_produto['nome_categoria']) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-12">
-                                        <button type="submit" name="buscar" class="btn btn-primary">Buscar</button>
-                                        <a href="blog.php" class="btn btn-secondary">Limpar Filtros</a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+
+
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <h2 class="h5">Novo Post</h2>
+                        <div class="col-md-3 form-post">
+                            <h1 class="h3">Blog Achei Pet!</h1><br>
+
+
+                            <figure>
+                                <blockquote class="blockquote">
+                                    <p>Novo Post</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Compartilhe conosco suas expriências como tutor!</cite>
+                                </figcaption>
+                            </figure>
+
                             <form method="post" action="blog.php">
                                 <input type="hidden" name="acao" value="publicar_post">
                                 <label>Título:</label><br>
@@ -185,19 +175,22 @@ try {
                                 <select class="form-control" id="new_post_tipo_pet" name="id_tipo_pet">
                                     <option value="">Nenhum</option>
                                     <?php foreach ($tipos_pet_disponiveis as $tipo_pet): ?>
-                                        <option value="<?php echo htmlspecialchars($tipo_pet['id_categoria_animal']); ?>">
-                                            <?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>
-                                        </option>
+                                    <option value="<?php echo htmlspecialchars($tipo_pet['id_categoria_animal']); ?>">
+                                        <?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>
+                                    </option>
                                     <?php endforeach; ?>
                                 </select><br>
 
-                                <label for="new_post_categoria_produto_blog">Categoria de Assunto (principal):</label><br>
-                                <select class="form-control" id="new_post_categoria_produto_blog" name="id_categoria_produto_blog">
+                                <label for="new_post_categoria_produto_blog">Categoria de Assunto
+                                    (principal):</label><br>
+                                <select class="form-control" id="new_post_categoria_produto_blog"
+                                    name="id_categoria_produto_blog">
                                     <option value="">Nenhum</option>
                                     <?php foreach ($categorias_produto_disponiveis as $categoria_produto): ?>
-                                        <option value="<?php echo htmlspecialchars($categoria_produto['id_categoria_produto']); ?>">
-                                            <?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>
-                                        </option>
+                                    <option
+                                        value="<?php echo htmlspecialchars($categoria_produto['id_categoria_produto']); ?>">
+                                        <?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>
+                                    </option>
                                     <?php endforeach; ?>
                                 </select><br>
 
@@ -207,6 +200,53 @@ try {
                             </form>
                         </div>
                         <div class="col-md-9">
+                            <div class="mb-4">
+                                <div>
+                                    <form method="GET" action="blog.php">
+                                        <div class="row g-3 d-flex align-items-end">
+                                            <div class="col">
+                                                <label for="titulo" class="form-label">Título do Post:</label>
+                                                <input type="text" class="form-control" id="titulo" name="titulo"
+                                                    value="<?php echo htmlspecialchars($filtro_titulo); ?>"
+                                                    placeholder="Filtrar por título">
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <label for="tipo_pet" class="form-label">Tipo de Pet:</label>
+                                                <select class="form-select" id="tipo_pet" name="tipo_pet">
+                                                    <option value="">Todos os Pets</option>
+                                                    <?php foreach ($tipos_pet_disponiveis as $tipo_pet): ?>
+                                                    <option
+                                                        value="<?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>"
+                                                        <?php echo ($filtro_tipo_pet == $tipo_pet['nome_categoria']) ? 'selected' : ''; ?>>
+                                                        <?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>
+                                                    </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <label for="categoria_produto_blog" class="form-label">Categoria de
+                                                    Assunto:</label>
+                                                <select class="form-select" id="categoria_produto_blog"
+                                                    name="categoria_produto_blog">
+                                                    <option value="">Todas as Categorias</option>
+                                                    <?php foreach ($categorias_produto_disponiveis as $categoria_produto): ?>
+                                                    <option
+                                                        value="<?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>"
+                                                        <?php echo ($filtro_categoria_produto_blog == $categoria_produto['nome_categoria']) ? 'selected' : ''; ?>>
+                                                        <?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>
+                                                    </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <button type="submit" name="buscar"
+                                                    class="btn btn-primary">Buscar</button>
+                                                <a href="blog.php" class="btn btn-secondary">Limpar Filtros</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <h3>Últimas Publicações</h3>
                             <?php if (empty($posts)): ?>
                             <p>Nenhuma postagem encontrada ainda.</p>
@@ -232,7 +272,8 @@ try {
                                                         <?php echo htmlspecialchars($post["titulo"]); ?>
                                                     </h5>
                                                     <?php if (!empty($post["nome_usuario"])): ?>
-                                                    <small style="font-size: 0.8em; color: #666;">por:
+                                                    <small class="badge badge-pill badge-primary"
+                                                        style="font-size: 0.8em; color: #666;">por:
                                                         <?php echo htmlspecialchars($post["nome_usuario"]); ?></small>
                                                     <?php endif; ?>
                                                 </div>
@@ -241,10 +282,16 @@ try {
                                             <p><?php echo nl2br(htmlspecialchars($post["conteudo"])); ?></p>
 
                                             <?php if (!empty($post["nome_tipo_pet"])): ?>
-                                                <p><small>Tipo de Pet: <b><?php echo htmlspecialchars($post["nome_tipo_pet"]); ?></b></small></p>
+                                            <small>
+                                                <b
+                                                    class="badge rounded-pill bg-primary"><?php echo htmlspecialchars($post["nome_tipo_pet"]); ?></b></small>
+
                                             <?php endif; ?>
                                             <?php if (!empty($post["nome_categoria_produto_blog"])): ?>
-                                                <p><small>Categoria: <b><?php echo htmlspecialchars($post["nome_categoria_produto_blog"]); ?></b></small></p>
+                                            <small>
+                                                <b
+                                                    class="badge rounded-pill bg-warning text-dark"><?php echo htmlspecialchars($post["nome_categoria_produto_blog"]); ?></b></small>
+
                                             <?php endif; ?>
 
                                             <p class="text-muted"><small>Publicado em:
@@ -256,9 +303,9 @@ try {
                                             ?>
                                             <div class="post-actions">
                                                 <a href="editar_post.php?id_post=<?= htmlspecialchars($post['id_post']) ?>"
-                                                    class="btn btn-warning btn-sm">Editar</a>
+                                                    class="btn btn-outline-primary btn-sm">Editar</a>
                                                 <a href="excluir_post.php?id=<?= htmlspecialchars($post['id_post']) ?>"
-                                                    class="btn btn-danger btn-sm"
+                                                    class="btn btn-outline-danger btn-sm"
                                                     onclick="return confirm('Tem certeza que deseja excluir esta postagem?');">Excluir</a>
                                             </div>
                                             <?php endif; ?>
@@ -278,4 +325,5 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     xintegrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
 </script>
+
 </html>

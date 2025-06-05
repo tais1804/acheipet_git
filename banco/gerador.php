@@ -83,7 +83,7 @@ if (empty($items)) {
 
 $metadata = [
 	"custom_id" => "Order_00001",
-	"notification_url" => "gerador/index.php" //transação que identifica a compra
+	"notification_url" => "https://alesandrogomes.com.br" //transação que identifica a compra
 ];
 
 
