@@ -1,7 +1,7 @@
 <?php
 include "conexao.php";
-include "dados_usuario.php"; // Para acessar $_SESSION["id_usuario"]
-include "verificar_login.php"; // Para garantir que o usuário esteja logado
+include "dados_usuario.php";
+include "verificar_login.php";
 
 if (!isset($_SESSION["id_usuario"])) {
     header("Location: login.php");
@@ -10,6 +10,19 @@ if (!isset($_SESSION["id_usuario"])) {
 
 $id_post = null;
 $post_data = null;
+$tipos_pet_disponiveis = [];
+$categorias_produto_disponiveis = [];
+
+try {
+    $stmt_tipos_pet = $conexao->query("SELECT id_categoria_animal, nome_categoria FROM categoria_animais ORDER BY nome_categoria");
+    $tipos_pet_disponiveis = $stmt_tipos_pet->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt_categorias_produto = $conexao->query("SELECT id_categoria_produto, nome_categoria FROM categoria_produtos ORDER BY nome_categoria");
+    $categorias_produto_disponiveis = $stmt_categorias_produto->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    echo "<p>Erro ao carregar opções de tipo de pet e categorias: " . $e->getMessage() . "</p>";
+}
 
 if (isset($_GET['id_post'])) {
     $id_post = (int) $_GET['id_post'];
@@ -29,16 +42,16 @@ if (isset($_GET['id_post'])) {
         exit;
     }
 } else if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["acao"]) && $_POST["acao"] == "salvar_edicao") {
-    // Processar o formulário de edição
     $id_post_editado = htmlspecialchars($_POST["id_post"]);
     $titulo_editado = htmlspecialchars($_POST["titulo"]);
     $conteudo_editado = htmlspecialchars($_POST["conteudo"]);
-    $id_usuario_logado = $_SESSION["id_usuario"]; // Garante que o usuário logado é o autor
+    $id_tipo_pet_editado = !empty($_POST["id_tipo_pet"]) ? $_POST["id_tipo_pet"] : NULL;
+    $id_categoria_produto_blog_editado = !empty($_POST["id_categoria_produto_blog"]) ? $_POST["id_categoria_produto_blog"] : NULL;
+    $id_usuario_logado = $_SESSION["id_usuario"];
 
     try {
-        // Atualize a postagem, garantindo que o ID do usuário logado corresponda ao autor
-        $stmt_update = $conexao->prepare("UPDATE Blog SET titulo = ?, conteudo = ? WHERE id_post = ? AND id_usuario = ?");
-        $stmt_update->execute([$titulo_editado, $conteudo_editado, $id_post_editado, $id_usuario_logado]);
+        $stmt_update = $conexao->prepare("UPDATE Blog SET titulo = ?, conteudo = ?, id_tipo_pet = ?, id_categoria_produto_blog = ? WHERE id_post = ? AND id_usuario = ?");
+        $stmt_update->execute([$titulo_editado, $conteudo_editado, $id_tipo_pet_editado, $id_categoria_produto_blog_editado, $id_post_editado, $id_usuario_logado]);
 
         if ($stmt_update->rowCount() > 0) {
             echo "<script>alert('Postagem atualizada com sucesso!'); window.location.href = 'blog.php';</script>";
@@ -48,7 +61,7 @@ if (isset($_GET['id_post'])) {
     } catch (PDOException $e) {
         echo "<script>alert('Erro ao atualizar postagem: " . $e->getMessage() . "'); window.location.href = 'blog.php';</script>";
     }
-    exit(); // Importante para parar a execução após o POST
+    exit();
 } else {
     echo "<script>alert('ID da postagem não fornecido para edição.'); window.location.href = 'blog.php';</script>";
     exit();
@@ -64,7 +77,7 @@ if (isset($_GET['id_post'])) {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="../css/estilo-achei-pet.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+        xintegrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
 
@@ -81,11 +94,34 @@ if (isset($_GET['id_post'])) {
                         <input type="hidden" name="acao" value="salvar_edicao">
                         <input type="hidden" name="id_post" value="<?= htmlspecialchars($post_data['id_post'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
 
-
                         <label>Título:</label><br>
-                        <input class="form-control" type="text" name="titulo" value="<?= htmlspecialchars($post_data['titulo'], ENT_QUOTES, 'UTF-8') ?>" required><br><br>
+                        <input class="form-control" type="text" name="titulo" value="<?= htmlspecialchars($post_data['titulo'], ENT_QUOTES, 'UTF-8') ?>" required><br>
+                        
                         <label>Conteúdo:</label><br>
-                        <textarea class="form-control" name="conteudo" rows="10" required><?= htmlspecialchars($post_data['conteudo'], ENT_QUOTES, 'UTF-8') ?></textarea><br><br>
+                        <textarea class="form-control" name="conteudo" rows="10" required><?= htmlspecialchars($post_data['conteudo'], ENT_QUOTES, 'UTF-8') ?></textarea><br>
+                        
+                        <label for="edit_tipo_pet">Tipo de Pet (principal):</label><br>
+                        <select class="form-control" id="edit_tipo_pet" name="id_tipo_pet">
+                            <option value="">Nenhum</option>
+                            <?php foreach ($tipos_pet_disponiveis as $tipo_pet): ?>
+                                <option value="<?php echo htmlspecialchars($tipo_pet['id_categoria_animal']); ?>"
+                                    <?php echo (isset($post_data['id_tipo_pet']) && $post_data['id_tipo_pet'] == $tipo_pet['id_categoria_animal']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($tipo_pet['nome_categoria']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select><br>
+
+                        <label for="edit_categoria_produto_blog">Categoria de Assunto (principal):</label><br>
+                        <select class="form-control" id="edit_categoria_produto_blog" name="id_categoria_produto_blog">
+                            <option value="">Nenhum</option>
+                            <?php foreach ($categorias_produto_disponiveis as $categoria_produto): ?>
+                                <option value="<?php echo htmlspecialchars($categoria_produto['id_categoria_produto']); ?>"
+                                    <?php echo (isset($post_data['id_categoria_produto_blog']) && $post_data['id_categoria_produto_blog'] == $categoria_produto['id_categoria_produto']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($categoria_produto['nome_categoria']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select><br><br>
+
                         <input class="btn btn-success" type="submit" value="Salvar Edição">
                         <a href="blog.php" class="btn btn-secondary">Cancelar</a>
                     </form>
@@ -97,5 +133,4 @@ if (isset($_GET['id_post'])) {
         </div>
     </div>
 </body>
-
 </html>
