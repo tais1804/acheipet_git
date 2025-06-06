@@ -93,11 +93,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         padding: 28px !important;
     }
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="../css/estilo-achei-pet.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
+
+    <script>
+    $(document).ready(function() {
+        $('#telefone').mask('(00) 00000-0000');
+    });
+    </script>
+
 </head>
 
 <body class="align-items-center bg-body-tertiary">
@@ -157,8 +168,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                             <div class="col-md-3">
                                                 <label class="form-label">Tel para Contato:</label><br>
-                                                <input class="form-control" type="text" name="telefone_contato"
-                                                    required>
+                                                <input class="form-control" type="text" id="telefone"
+                                                    name="telefone_contato" required>
                                             </div>
 
                                             <div class="col-md-3">
@@ -213,5 +224,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
 </script>
+
 
 </html>
