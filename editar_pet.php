@@ -17,8 +17,10 @@ try {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
     $especie = $_POST["especie"];
+    $genero = $_POST["genero"];
     $raca = $_POST["raca"];
     $idade = $_POST["idade"];
+    $idade_unidade = $_POST["idade_unidade"];
     $porte = $_POST["porte"];
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
@@ -43,9 +45,10 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
     $id_usuario = $_POST["id_usuario"];
 
     try {
-        $stmt = $conexao->prepare("UPDATE Pets SET nome = ?, especie = ?, raca = ?, idade = ?, porte = ?, temperamento = ?, vacinas = ?, historico_saude = ?, foto = ?, status = ?, id_usuario = ? WHERE id_pet = ?");
-        $stmt->execute([$nome, $especie, $raca, $idade, $porte, $temperamento, $vacinas, $historico_saude, $foto, $status, $id_usuario, $id_pet]);
-        echo "<p>Pet atualizado com sucesso!</p>";
+        $stmt = $conexao->prepare("UPDATE Pets SET nome = ?, especie = ?, raca = ?, idade_valor = ?, idade_unidade = ?, porte = ?, temperamento = ?, vacinas = ?, historico_saude = ?, foto = ?, status = ?, id_usuario = ? WHERE id_pet = ?");
+        $stmt->execute([$nome, $especie, $raca, $idade, $idade_unidade, $porte, $temperamento, $vacinas, $historico_saude, $foto, $status, $id_usuario, $id_pet]);
+        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+  <strong>Pet atualizado com sucesso!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
     } catch (PDOException $e) {
         echo "<p>Erro ao atualizar pet: " . $e->getMessage() . "</p>";
     }
@@ -54,71 +57,97 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Achei pet</title>
-    <link rel="icon" type="image/png" sizes="16x16"  href="images/favicons/favicon-16x16.png">
-    
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Lato&family=Open+Sans&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-        }
-        h1, h2 {
-            font-family: 'Lato', sans-serif;
-        }
-        img.fotopet {
-            max-width: 100px;
-            height: auto;
-            object-fit: cover;
-        }
+    body {
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    h1,
+    h2 {
+        font-family: 'Lato', sans-serif;
+    }
+
+    img.fotopet {
+        max-width: 100px;
+        height: auto;
+        object-fit: cover;
+    }
     </style>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/estilo-achei-pet.css">
 </head>
+
 <body>
     <?php include "header.php"; ?>
     <main>
         <div class="container">
-    <div class="container mx-auto p-6">
-    <h1>Editar Pet</h1>
-    <form class="" method="post" enctype="multipart/form-data" action="editar_pet.php?id=<?php echo $id_pet; ?>">
+            <div class="container mx-auto p-6">
+                <h1>Editar Pet</h1>
+                <form class="" method="post" enctype="multipart/form-data"
+                    action="editar_pet.php?id=<?php echo $id_pet; ?>">
 
-        <div class="mb-3">
-        <label class="form-label">Nome:</label class="form-label">
-        <input class="form-control" type="text" name="nome" value="<?php echo $pet["nome"]; ?>"><br>
-        <label class="form-label">Espécie:</label class="form-label">
-        <input class="form-control" type="text" name="especie" value="<?php echo $pet["especie"]; ?>"><br>
-        <label class="form-label">Raça:</label class="form-label">
-        <input class="form-control" type="text" name="raca" value="<?php echo $pet["raca"]; ?>"><br>
-        <label class="form-label">Idade:</label class="form-label">
-        <input class="form-control" type="number" name="idade" value="<?php echo $pet["idade"]; ?>"><br>
-        <label class="form-label">Porte:</label class="form-label">
-        <input class="form-control" type="text" name="porte" value="<?php echo $pet["porte"]; ?>"><br>
-        <label class="form-label">Temperamento:</label class="form-label">
-        <textarea  class="form-control" name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
-        <label class="form-label">Vacinas:</label class="form-label">
-        <textarea  class="form-control" name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
-        <label class="form-label">Histórico de Saúde:</label class="form-label">
-        <textarea  class="form-control" name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
-        <label class="form-label">Foto:</label class="form-label">
-        <input class="form-control" type="file" name="foto" value="<?php echo $pet["foto"]; ?>"><br>
-        <label class="form-label">Status:</label class="form-label"><br>
-        <select class="form-select"  name="status">
-            <option value="perdido" <?php if ($pet["status"] == "perdido") echo "selected"; ?>>Perdido</option>
-            <option value="adocao" <?php if ($pet["status"] == "adocao") echo "selected"; ?>>Adoção</option>
-            <option value="encontrado" <?php if ($pet["status"] == "encontrado") echo "selected"; ?>>Encontrado</option>
-        </select><br><br>
-        <input class="btn btn-primary" type="submit" value="Salvar Alterações">
-        <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["id_usuario"]; ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Nome:</label class="form-label">
+                        <input class="form-control" type="text" name="nome" value="<?php echo $pet["nome"]; ?>"><br>
+                        <label class="form-label">Espécie:</label class="form-label">
+                        <input class="form-control" type="text" name="especie"
+                            value="<?php echo $pet["especie"]; ?>"><br>
+                        <label class="form-label">Raça:</label class="form-label">
+                        <input class="form-control" type="text" name="raca" value="<?php echo $pet["raca"]; ?>"><br>
+                        <label class="form-label">Idade:</label class="form-label">
+                        <input class="form-control" type="number" name="idade"
+                            value="<?php echo $pet["idade_valor"]; ?>"><br>
+                        <label class="form-label">Unidade da Idade:</label>
+                        <select class="form-select" name="idade_unidade">
+                            <option value="anos" <?php if ($pet["idade_unidade"] == "anos") echo "selected"; ?>>Anos
+                            </option>
+                            <option value="meses" <?php if ($pet["idade_unidade"] == "meses") echo "selected"; ?>>Meses
+                            </option>
+                        </select><br>
 
-    </div>
-    </form>
-    </div>
-    </div>
+                        <label class="form-label">Porte:</label class="form-label">
+                        <input class="form-control" type="text" name="porte" value="<?php echo $pet["porte"]; ?>"><br>
+                        <label class="form-label">Temperamento:</label class="form-label">
+                        <textarea class="form-control"
+                            name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
+                        <label class="form-label">Vacinas:</label class="form-label">
+                        <textarea class="form-control" name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
+                        <label class="form-label">Histórico de Saúde:</label class="form-label">
+                        <textarea class="form-control"
+                            name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
+                        <label class="form-label">Foto:</label class="form-label">
+                        <input class="form-control" type="file" name="foto" value="<?php echo $pet["foto"]; ?>"><br>
+                        <label class="form-label">Status:</label class="form-label"><br>
+                        <select class="form-select" name="status">
+                            <option value="perdido" <?php if ($pet["status"] == "perdido") echo "selected"; ?>>Perdido
+                            </option>
+                            <option value="adocao" <?php if ($pet["status"] == "adocao") echo "selected"; ?>>Adoção
+                            </option>
+                            <option value="encontrado" <?php if ($pet["status"] == "encontrado") echo "selected"; ?>>
+                                Encontrado</option>
+                        </select><br><br>
+                        <input class="btn btn-primary" type="submit" value="Salvar Alterações">
+                        <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["id_usuario"]; ?>">
+
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        xintegrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
+    </script>
 </body>
+
 </html>
