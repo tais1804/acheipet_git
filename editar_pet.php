@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $genero = $_POST["genero"];
     $raca = $_POST["raca"];
     $idade = $_POST["idade"];
-    $unidade = $_POST["idade_unidade"];
+    $idade_unidade = $_POST["idade_unidade"];
     $porte = $_POST["porte"];
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
@@ -45,8 +45,8 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
     $id_usuario = $_POST["id_usuario"];
 
     try {
-        $stmt = $conexao->prepare("UPDATE Pets SET nome = ?, especie = ?, genero = ?, raca = ?, idade_valor = ?, idade_unidade = ?, porte = ?, temperamento = ?, vacinas = ?, historico_saude = ?, foto = ?, status = ?, id_usuario = ? WHERE id_pet = ?");
-        $stmt->execute([$nome, $especie, $genero, $raca, $idade, $unidade, $porte, $temperamento, $vacinas, $historico_saude, $foto, $status, $id_usuario, $id_pet]);
+        $stmt = $conexao->prepare("UPDATE Pets SET nome = ?, especie = ?, raca = ?, idade_valor = ?, idade_unidade = ?, porte = ?, temperamento = ?, vacinas = ?, historico_saude = ?, foto = ?, status = ?, id_usuario = ? WHERE id_pet = ?");
+        $stmt->execute([$nome, $especie, $raca, $idade, $idade_unidade, $porte, $temperamento, $vacinas, $historico_saude, $foto, $status, $id_usuario, $id_pet]);
         echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
   <strong>Pet atualizado com sucesso!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
     } catch (PDOException $e) {
@@ -108,22 +108,12 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
                         <label class="form-label">Idade:</label class="form-label">
                         <input class="form-control" type="number" name="idade"
                             value="<?php echo $pet["idade_valor"]; ?>"><br>
-                        <br>
-
-                        <label class="form-label">Idade:</label>
-                        <select class="form-select" name="idade_unidade" required>
+                        <label class="form-label">Unidade da Idade:</label>
+                        <select class="form-select" name="idade_unidade">
                             <option value="anos" <?php if ($pet["idade_unidade"] == "anos") echo "selected"; ?>>Anos
                             </option>
                             <option value="meses" <?php if ($pet["idade_unidade"] == "meses") echo "selected"; ?>>Meses
                             </option>
-                        </select><br>
-
-                        <label class="form-label">Gênero:</label>
-                        <select class="form-select" name="genero" required>
-                            <option value="">Selecione o gênero</option>
-                            <option value="Macho">Macho</option>
-                            <option value="Fêmea">Fêmea</option>
-                            <option value="Não Informado">Não Informado</option>
                         </select><br>
 
                         <label class="form-label">Porte:</label class="form-label">
