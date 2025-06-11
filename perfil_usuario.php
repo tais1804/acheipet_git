@@ -16,7 +16,7 @@ include "dados_usuario.php";
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
     a {
-        color: rgb(235 89 91) !important;
+        /*color: rgb(235 89 91) !important;*/
         text-decoration: underline;
     }
 

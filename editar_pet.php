@@ -14,6 +14,13 @@ try {
     exit;
 }
 
+try {
+    $stmt_categorias = $conexao->query("SELECT id_categoria_animal, nome_categoria FROM categoria_animais ORDER BY nome_categoria");
+    $categorias_animais = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $categorias_animais = [];
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["nome"];
     $especie = $_POST["especie"];
@@ -93,55 +100,120 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
     <main>
         <div class="container">
             <div class="container mx-auto p-6">
-                <h1>Editar Pet</h1>
-                <form class="" method="post" enctype="multipart/form-data"
-                    action="editar_pet.php?id=<?php echo $id_pet; ?>">
+                <div class="relative w-full min-h-screen row justify-content-md-center">
+                    <div class="col-md-8">
+                        <br>
+                        <div class="card">
+                            <div class="card-body">
+                                <h1 class="h4">Editar pet</h1>
+                                <form class="" method="post" enctype="multipart/form-data"
+                                    action="editar_pet.php?id=<?php echo $id_pet; ?>">
 
-                    <div class="mb-3">
-                        <label class="form-label">Nome:</label class="form-label">
-                        <input class="form-control" type="text" name="nome" value="<?php echo $pet["nome"]; ?>"><br>
-                        <label class="form-label">Espécie:</label class="form-label">
-                        <input class="form-control" type="text" name="especie"
-                            value="<?php echo $pet["especie"]; ?>"><br>
-                        <label class="form-label">Raça:</label class="form-label">
-                        <input class="form-control" type="text" name="raca" value="<?php echo $pet["raca"]; ?>"><br>
-                        <label class="form-label">Idade:</label class="form-label">
-                        <input class="form-control" type="number" name="idade"
-                            value="<?php echo $pet["idade_valor"]; ?>"><br>
-                        <label class="form-label">Unidade da Idade:</label>
-                        <select class="form-select" name="idade_unidade">
-                            <option value="anos" <?php if ($pet["idade_unidade"] == "anos") echo "selected"; ?>>Anos
-                            </option>
-                            <option value="meses" <?php if ($pet["idade_unidade"] == "meses") echo "selected"; ?>>Meses
-                            </option>
-                        </select><br>
+                                    <div class="mb-3 row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Nome:</label class="form-label">
+                                            <input class="form-control" type="text" name="nome"
+                                                value="<?php echo $pet["nome"]; ?>"><br>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Espécie:</label><br>
+                                            <select class="form-select" name="especie" required>
+                                                <option value="">Selecione a espécie</option>
+                                                <?php foreach ($categorias_animais as $categoria): ?>
+                                                <option
+                                                    value="<?php echo htmlspecialchars($categoria['nome_categoria']); ?>">
+                                                    <?php echo htmlspecialchars($categoria['nome_categoria']); ?>
+                                                </option>
+                                                <?php endforeach; ?>
+                                            </select><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Raça:</label class="form-label">
+                                            <input class="form-control" type="text" name="raca"
+                                                value="<?php echo $pet["raca"]; ?>"><br>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label class="form-label">Idade:</label class="form-label">
+                                            <input class="form-control" type="number" name="idade"
+                                                value="<?php echo $pet["idade_valor"]; ?>"><br>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Unidade da Idade:</label>
+                                            <select class="form-select" name="idade_unidade">
+                                                <option value="anos"
+                                                    <?php if ($pet["idade_unidade"] == "anos") echo "selected"; ?>>Anos
+                                                </option>
+                                                <option value="meses"
+                                                    <?php if ($pet["idade_unidade"] == "meses") echo "selected"; ?>>
+                                                    Meses
+                                                </option>
+                                            </select><br>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Gênero:</label>
+                                            <select class="form-select" name="genero" required>
+                                                <option value="">Selecione o gênero</option>
+                                                <option value="Macho">Macho</option>
+                                                <option value="Fêmea">Fêmea</option>
+                                                <option value="Não Informado">Não Informado</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Porte:</label class="form-label">
+                                            <input class="form-control" type="text" name="porte"
+                                                value="<?php echo $pet["porte"]; ?>"><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Temperamento:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Vacinas:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Histórico de Saúde:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label class="form-label">Foto:</label class="form-label">
+                                            <input class="form-control" type="file" name="foto"
+                                                value="<?php echo $pet["foto"]; ?>"><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Status:</label class="form-label"><br>
+                                            <select class="form-select" name="status">
+                                                <option value="perdido"
+                                                    <?php if ($pet["status"] == "perdido") echo "selected"; ?>>
+                                                    Perdido
+                                                </option>
+                                                <option value="adocao"
+                                                    <?php if ($pet["status"] == "adocao") echo "selected"; ?>>Adoção
+                                                </option>
+                                                <option value="encontrado"
+                                                    <?php if ($pet["status"] == "encontrado") echo "selected"; ?>>
+                                                    Encontrado</option>
+                                            </select><br><br>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input class="btn btn-primary" type="submit" value="Salvar Alterações">
+                                            <input type="hidden" name="id_usuario"
+                                                value="<?php echo $_SESSION["id_usuario"]; ?>">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <a href="meus_pets.php" class="btn btn-secondary">Cancelar</a>
+                                        </div>
 
-                        <label class="form-label">Porte:</label class="form-label">
-                        <input class="form-control" type="text" name="porte" value="<?php echo $pet["porte"]; ?>"><br>
-                        <label class="form-label">Temperamento:</label class="form-label">
-                        <textarea class="form-control"
-                            name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
-                        <label class="form-label">Vacinas:</label class="form-label">
-                        <textarea class="form-control" name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
-                        <label class="form-label">Histórico de Saúde:</label class="form-label">
-                        <textarea class="form-control"
-                            name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
-                        <label class="form-label">Foto:</label class="form-label">
-                        <input class="form-control" type="file" name="foto" value="<?php echo $pet["foto"]; ?>"><br>
-                        <label class="form-label">Status:</label class="form-label"><br>
-                        <select class="form-select" name="status">
-                            <option value="perdido" <?php if ($pet["status"] == "perdido") echo "selected"; ?>>Perdido
-                            </option>
-                            <option value="adocao" <?php if ($pet["status"] == "adocao") echo "selected"; ?>>Adoção
-                            </option>
-                            <option value="encontrado" <?php if ($pet["status"] == "encontrado") echo "selected"; ?>>
-                                Encontrado</option>
-                        </select><br><br>
-                        <input class="btn btn-primary" type="submit" value="Salvar Alterações">
-                        <input type="hidden" name="id_usuario" value="<?php echo $_SESSION["id_usuario"]; ?>">
 
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </main>
