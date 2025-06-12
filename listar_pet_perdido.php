@@ -26,12 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['buscar'])) {
 }
 
 try {
-    $sql = "SELECT * FROM PetsPerdidos WHERE 1=1";
-
+    $sql = "SELECT pp.*, u.nome AS nome_usuario FROM PetsPerdidos pp JOIN usuarios u ON pp.id_usuario = u.id_usuario WHERE 1=1";
+    
     $params = [];
 
     if (!empty($filtro_nome)) {
-        $sql .= " AND nome LIKE ?";
+        $sql .= " AND pp.nome LIKE ?"; // AQUI ESTÁ A CORREÇÃO
         $params[] = '%' . $filtro_nome . '%';
     }
     if (!empty($filtro_especie)) {
@@ -125,13 +125,15 @@ try {
     .card {
         margin: 10px;
         padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        border: 0px solid #ddd;
+        border-radius: 50px;
+        box-shadow: 0px 7px 20px #00000021;
     }
 
     .card img {
         max-width: 100%;
-
+        height: auto;
+        border-radius: 36px !important;
     }
 
     .card-body {
@@ -159,13 +161,17 @@ try {
 
     .card-img-achei {
         max-width: 100%;
-        height: 299px !important;
+        height: 267px !important;
         object-fit: cover;
         /* Para garantir que a imagem preencha o espaço sem distorcer */
     }
 
+    .card-pet-perdido {
+        color: #7e7e7e;
+    }
+
     .card-pet-perdido div {
-        margin: 5px 0 5px 0;
+        margin: 4px 0 4px 0;
     }
     </style>
 
@@ -180,11 +186,9 @@ try {
             <div id="webcrumbs">
                 <div class="relative col-lg-10 mx-auto min-h-screen">
                     <br />
-                    <h1 class="h1">Listar Pets Perdidos</h1>
-                    <br />
 
-                    <div class="card mb-4">
-                        <div class="card-body">
+                    <div class="mb-4">
+                        <div>
                             <form method="GET" action="listar_pet_perdido.php">
                                 <div class="row g-3 align-items-end">
                                     <div class="col-md-3 form-group">
@@ -242,7 +246,7 @@ try {
                                         </select>
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="local_perdido" class="form-label">Local Perdido:</label>
+                                        <label for="local_perdido" class="form-label">Local da perda:</label>
                                         <input type="text" class="form-control" id="local_perdido" name="local_perdido"
                                             value="<?php echo htmlspecialchars($filtro_local); ?>"
                                             placeholder="Cidade, bairro, etc.">
@@ -264,6 +268,9 @@ try {
                             </form>
                         </div>
                     </div>
+
+                    <h1 class="h4 title">Lista de pets perdidos</h1>
+
                     <!-- NOVO - CARDS PARA LISTAR PETS PERDIDOS -->
                     <?php if (count($petsPerdidos) > 0): ?>
                     <div id="listarpet">
@@ -283,28 +290,41 @@ try {
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><?php echo htmlspecialchars($pet_perdido["nome"]); ?>
                                         </h5>
+
                                         <div class="row card-pet-perdido">
-                                            <div class="col-md-6">
-                                                <b>Idade:
-                                                </b><?php echo htmlspecialchars($pet_perdido["idade_valor"]) . " " . htmlspecialchars($pet_perdido["idade_unidade"]); ?>
+                                            <div class="col-md-12">
+                                                <b>Falar com: </b>
+                                                <?php echo htmlspecialchars($pet_perdido["nome_usuario"]); ?>
                                             </div>
+
                                             <div class="col-md-6">
-                                                <b>Espécie: </b>
-                                                <?php echo htmlspecialchars($pet_perdido["especie"]); ?>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>Raça: </b> <?php echo htmlspecialchars($pet_perdido["raca"]); ?>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <b>Gênero: </b> <?php echo htmlspecialchars($pet_perdido["genero"]); ?>
-                                            </div>
-                                            <div class="col-md-6"><b>Tel.: </b>
+                                                <!--<b>Tel.: </b>-->
+                                                &bull;
                                                 <?php echo htmlspecialchars($pet_perdido["telefone_contato"]); ?>
                                             </div>
-                                            <div class="col-md-6"><b>Data Perda: </b>
-                                                <?php echo htmlspecialchars($pet_perdido["data_perda"]); ?>
+                                            <div class="col-md-6">
+                                                <!--<b>Espécie: </b>-->
+                                                &bull; <?php echo htmlspecialchars($pet_perdido["especie"]); ?>
                                             </div>
-                                            <div class="col-md-12"><b>Local Perdido: </b>
+                                            <div class="col-md-6">
+                                                <!--<b>Idade:</b>-->
+                                                &bull;
+                                                <?php echo htmlspecialchars($pet_perdido["idade_valor"]) . " " . htmlspecialchars($pet_perdido["idade_unidade"]); ?>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <!--<b>Raça: </b>-->
+                                                &bull; <?php echo htmlspecialchars($pet_perdido["raca"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <!--<b>Gênero: </b>-->
+                                                &bull; <?php echo htmlspecialchars($pet_perdido["genero"]); ?>
+                                            </div>
+
+                                            <div class="col-md-12"><b>Perdi em: </b>
+                                                <?php echo date("d/m/Y", strtotime($pet_perdido["data_perda"])); ?>
+                                            </div>
+                                            <div class="col-md-12"><b>Local da perda: </b>
                                                 <?php echo htmlspecialchars($pet_perdido["local_perdido"]); ?>
                                             </div>
                                             <div class="col-md-12"><b>Descrição: </b>

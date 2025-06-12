@@ -25,41 +25,41 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['buscar'])) {
 
 try {
     // Monta a consulta SQL base
-    $sql = "SELECT * FROM Pets WHERE 1=1"; // 1=1 para facilitar a adição de condições
+    $sql = "SELECT p.*, u.nome AS nome_usuario FROM Pets p JOIN usuarios u ON p.id_usuario = u.id_usuario WHERE 1=1"; // 1=1 para facilitar a adição de condições
 
     $params = [];
 
     // Adiciona condições de filtro se os valores forem fornecidos
     if (!empty($filtro_nome)) {
-        $sql .= " AND nome LIKE ?";
+        $sql .= " AND p.nome LIKE ?"; // <-- AQUI ESTÁ A CORREÇÃO: p.nome
         $params[] = '%' . $filtro_nome . '%';
     }
     if (!empty($filtro_especie)) {
-        $sql .= " AND especie = ?";
+        $sql .= " AND p.especie = ?"; // <-- É uma boa prática qualificar mesmo quando não é ambíguo
         $params[] = $filtro_especie;
     }
     if (!empty($filtro_raca)) {
-        $sql .= " AND raca LIKE ?";
+        $sql .= " AND p.raca LIKE ?"; // <-- É uma boa prática qualificar mesmo quando não é ambíguo
         $params[] = '%' . $filtro_raca . '%';
     }
     if (!empty($filtro_genero)) {
-        $sql .= " AND genero = ?";
+        $sql .= " AND p.genero = ?"; // <-- É uma boa prática qualificar mesmo quando não é ambíguo
         $params[] = $filtro_genero;
     }
     if (!empty($filtro_porte)) {
-        $sql .= " AND porte = ?";
+        $sql .= " AND p.porte = ?"; // <-- É uma boa prática qualificar mesmo quando não é ambíguo
         $params[] = $filtro_porte;
     }
     // Filtro de idade: Se ambos, valor e unidade, forem preenchidos
     if (!empty($filtro_idade_valor) && !empty($filtro_idade_unidade)) {
-        $sql .= " AND idade_valor = ? AND idade_unidade = ?";
+        $sql .= " AND p.idade_valor = ? AND p.idade_unidade = ?"; // <-- Qualificado
         $params[] = $filtro_idade_valor;
         $params[] = $filtro_idade_unidade;
     } elseif (!empty($filtro_idade_valor)) { // Se apenas o valor for preenchido
-        $sql .= " AND idade_valor = ?";
+        $sql .= " AND p.idade_valor = ?"; // <-- Qualificado
         $params[] = $filtro_idade_valor;
     } elseif (!empty($filtro_idade_unidade)) { // Se apenas a unidade for preenchida
-        $sql .= " AND idade_unidade = ?";
+        $sql .= " AND p.idade_unidade = ?"; // <-- Qualificado
         $params[] = $filtro_idade_unidade;
     }
 
@@ -70,7 +70,7 @@ try {
     // }
 
     // Ordena os resultados (assumindo que 'id_pet' é a coluna de ID)
-    $sql .= " ORDER BY id_pet DESC"; 
+    $sql .= " ORDER BY p.id_pet DESC"; // <-- É uma boa prática qualificar
 
     $stmt = $conexao->prepare($sql);
     $stmt->execute($params);
@@ -124,13 +124,15 @@ try {
     .card {
         margin: 10px;
         padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        border: 0px solid #ddd;
+        border-radius: 50px;
+        box-shadow: 0px 7px 20px #00000021;
     }
 
     .card img {
         max-width: 100%;
         height: auto;
+        border-radius: 36px !important;
     }
 
     .card-body {
@@ -161,6 +163,14 @@ try {
 
     .title {
         margin-left: 11px;
+    }
+
+    .card-pet-perdido {
+        color: #7e7e7e;
+    }
+
+    .card-pet-perdido div {
+        margin: 4px 0 4px 0;
     }
     </style>
 </head>
@@ -272,14 +282,32 @@ try {
                                                 ?>
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><?php echo htmlspecialchars($pet["nome"]); ?></h5>
-                                        <div><b>Idade:</b>
-                                            <?php echo htmlspecialchars($pet["idade_valor"]) . " " . htmlspecialchars($pet["idade_unidade"]); ?>
+                                        <div class="row card-pet-perdido">
+                                            <div class="col-md-12">
+                                                <b>Responsável: </b>
+                                                <?php echo htmlspecialchars($pet["nome_usuario"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull;
+                                                Idade
+                                                <?php echo htmlspecialchars($pet["idade_valor"]) . " " . htmlspecialchars($pet["idade_unidade"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull; <?php echo htmlspecialchars($pet["especie"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull; <?php echo htmlspecialchars($pet["raca"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull; Porte <?php echo htmlspecialchars($pet["porte"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull; <?php echo htmlspecialchars($pet["genero"]); ?>
+                                            </div>
+                                            <div class="col-md-6">
+                                                &bull; <?php echo htmlspecialchars($pet["numero_contato"]); ?>
+                                            </div>
                                         </div>
-                                        <div><b>Espécie:</b> <?php echo htmlspecialchars($pet["especie"]); ?></div>
-                                        <div><b>Raça:</b> <?php echo htmlspecialchars($pet["raca"]); ?></div>
-                                        <div><b>Porte:</b> <?php echo htmlspecialchars($pet["porte"]); ?></div>
-                                        <div><b>Gênero:</b> <?php echo htmlspecialchars($pet["genero"]); ?></div>
-                                        <div><b>Tel.:</b> <?php echo htmlspecialchars($pet["numero_contato"]); ?></div>
                                     </div>
                                 </div>
                             </div>
