@@ -4,14 +4,16 @@ include "dados_usuario.php";
 include "verificar_login.php";
 
 $id_pet = $_GET["id"];
+$mensagem_sucesso = ""; // Inicializa a variável para a mensagem de sucesso
+$mensagem_erro = "";    // Inicializa a variável para a mensagem de erro
 
 try {
     $stmt = $conexao->prepare("SELECT * FROM Pets WHERE id_pet = ?");
     $stmt->execute([$id_pet]);
     $pet = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    echo "<p>Erro ao obter dados do pet: " . $e->getMessage() . "</p>";
-    exit;
+    $mensagem_erro = "<p>Erro ao obter dados do pet: " . $e->getMessage() . "</p>";
+    // Não usamos exit aqui para que o restante da página ainda possa ser exibido (com a mensagem de erro)
 }
 
 try {
@@ -19,6 +21,7 @@ try {
     $categorias_animais = $stmt_categorias->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categorias_animais = [];
+    $mensagem_erro .= "<p>Erro ao obter categorias de animais: " . $e->getMessage() . "</p>"; // Concatena a mensagem de erro
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,21 +35,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $temperamento = $_POST["temperamento"];
     $vacinas = $_POST["vacinas"];
     $historico_saude = $_POST["historico_saude"];
+
     // Verifica se o usuário enviou um novo arquivo
-if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
-    $nome_arquivo = basename($_FILES['foto']['name']);
-    $caminho_destino = "uploads/" . $nome_arquivo;
-    
-    // Move o arquivo para a pasta uploads
-    if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminho_destino)) {
-        $foto = $caminho_destino;
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
+        $nome_arquivo = basename($_FILES['foto']['name']);
+        $caminho_destino = "uploads/" . $nome_arquivo;
+        
+        // Move o arquivo para a pasta uploads
+        if (move_uploaded_file($_FILES['foto']['tmp_name'], $caminho_destino)) {
+            $foto = $caminho_destino;
+        } else {
+            $mensagem_erro .= "<p>Erro ao mover o arquivo de imagem.</p>"; // Concatena a mensagem de erro
+            $foto = $pet["foto"]; // mantém a antiga
+        }
     } else {
-        echo "<p>Erro ao mover o arquivo de imagem.</p>";
         $foto = $pet["foto"]; // mantém a antiga
     }
-} else {
-    $foto = $pet["foto"]; // mantém a antiga
-}
 
     $status = $_POST["status"];
     $id_usuario = $_POST["id_usuario"];
@@ -54,10 +58,16 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
     try {
         $stmt = $conexao->prepare("UPDATE Pets SET nome = ?, especie = ?, raca = ?, idade_valor = ?, idade_unidade = ?, porte = ?, temperamento = ?, vacinas = ?, historico_saude = ?, foto = ?, status = ?, id_usuario = ? WHERE id_pet = ?");
         $stmt->execute([$nome, $especie, $raca, $idade, $idade_unidade, $porte, $temperamento, $vacinas, $historico_saude, $foto, $status, $id_usuario, $id_pet]);
-        echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-  <strong>Pet atualizado com sucesso!<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
+        $mensagem_sucesso = "<div class='alert alert-success alert-dismissible fade show' role='alert'>
+            <strong>Pet atualizado com sucesso!</strong>
+            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+        // Recarrega os dados do pet após a atualização para que o formulário mostre os dados mais recentes
+        $stmt = $conexao->prepare("SELECT * FROM Pets WHERE id_pet = ?");
+        $stmt->execute([$id_pet]);
+        $pet = $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        echo "<p>Erro ao atualizar pet: " . $e->getMessage() . "</p>";
+        $mensagem_erro .= "<p>Erro ao atualizar pet: " . $e->getMessage() . "</p>"; // Concatena a mensagem de erro
     }
 }
 ?>
@@ -103,6 +113,14 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
                 <div class="relative w-full min-h-screen row justify-content-md-center">
                     <div class="col-md-8">
                         <br>
+                        <?php 
+                            if (!empty($mensagem_sucesso)) {
+                                echo $mensagem_sucesso;
+                            }
+                            if (!empty($mensagem_erro)) {
+                                echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>" . $mensagem_erro . "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
+                            }
+                        ?>
                         <div class="card">
                             <div class="card-body">
                                 <h1 class="h4">Editar pet</h1>
@@ -121,7 +139,8 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
                                                 <option value="">Selecione a espécie</option>
                                                 <?php foreach ($categorias_animais as $categoria): ?>
                                                 <option
-                                                    value="<?php echo htmlspecialchars($categoria['nome_categoria']); ?>">
+                                                    value="<?php echo htmlspecialchars($categoria['nome_categoria']); ?>"
+                                                    <?php if ($pet["especie"] == $categoria['nome_categoria']) echo "selected"; ?>>
                                                     <?php echo htmlspecialchars($categoria['nome_categoria']); ?>
                                                 </option>
                                                 <?php endforeach; ?>
@@ -153,9 +172,15 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
                                             <label class="form-label">Gênero:</label>
                                             <select class="form-select" name="genero" required>
                                                 <option value="">Selecione o gênero</option>
-                                                <option value="Macho">Macho</option>
-                                                <option value="Fêmea">Fêmea</option>
-                                                <option value="Não Informado">Não Informado</option>
+                                                <option value="Macho"
+                                                    <?php if ($pet["genero"] == "Macho") echo "selected"; ?>>Macho
+                                                </option>
+                                                <option value="Fêmea"
+                                                    <?php if ($pet["genero"] == "Fêmea") echo "selected"; ?>>Fêmea
+                                                </option>
+                                                <option value="Não Informado"
+                                                    <?php if ($pet["genero"] == "Não Informado") echo "selected"; ?>>Não
+                                                    Informado</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -179,9 +204,15 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
                                                 name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
                                         </div>
                                         <div class="col-md-9">
-                                            <label class="form-label">Foto:</label class="form-label">
-                                            <input class="form-control" type="file" name="foto"
-                                                value="<?php echo $pet["foto"]; ?>"><br>
+                                            <label class="form-label">Foto atual:</label><br>
+                                            <?php if ($pet["foto"]): ?>
+                                            <img src="<?php echo htmlspecialchars($pet["foto"]); ?>"
+                                                class="fotopet mb-2" alt="Foto do Pet"><br>
+                                            <?php else: ?>
+                                            <p>Nenhuma foto atual.</p>
+                                            <?php endif; ?>
+                                            <label class="form-label">Alterar Foto:</label class="form-label">
+                                            <input class="form-control" type="file" name="foto"><br>
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">Status:</label class="form-label"><br>
@@ -218,7 +249,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] == UPLOAD_ERR_OK) {
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-        xintegrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous">
     </script>
 </body>
 
