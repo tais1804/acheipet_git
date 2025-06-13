@@ -8,6 +8,10 @@ if (!isset($_SESSION['carrinho'])) {
     $_SESSION['carrinho'] = array();
 }
 
+// Variável para armazenar as mensagens
+$mensagem_status = '';
+$tipo_mensagem = ''; // 'success', 'warning', 'danger'
+
 function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_categoria_animal = null, ?int $id_categoria_produto = null): array
 {
     try {
@@ -37,7 +41,9 @@ function obterProdutos(PDO $conexao, string $nome_pesquisa = '', ?int $id_catego
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        echo "<p class='text-danger'>Erro ao obter produtos: " . $e->getMessage() . "</p>";
+        // Altera a forma de exibir mensagens de erro do PDO para a nova variável
+        $GLOBALS['mensagem_status'] = "Erro ao obter produtos: " . $e->getMessage();
+        $GLOBALS['tipo_mensagem'] = 'danger';
         error_log("Erro PDO em obterProdutos: " . $e->getMessage());
         return [];
     }
@@ -76,16 +82,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$produto) {
-                echo "<p class='alert alert-warning'>Produto não encontrado!</p>";
+                $mensagem_status = "Produto não encontrado!";
+                $tipo_mensagem = 'warning';
             } elseif ($quantidade > $produto["estoque"]) {
-                echo "<p class='alert alert-warning'>Quantidade indisponível no estoque! (Disponível: " . $produto["estoque"] . ")</p>";
+                $mensagem_status = "Quantidade indisponível no estoque! (Disponível: " . $produto["estoque"] . ")";
+                $tipo_mensagem = 'warning';
             } else {
                 if (isset($_SESSION['carrinho'][$id_produto])) {
                     if (($_SESSION['carrinho'][$id_produto]['quantidade'] + $quantidade) > $produto['estoque']) {
-                        echo "<p class='alert alert-warning'>Não é possível adicionar mais. Quantidade no carrinho excederia o estoque!</p>";
+                        $mensagem_status = "Não é possível adicionar mais. Quantidade no carrinho excederia o estoque!";
+                        $tipo_mensagem = 'warning';
                     } else {
                         $_SESSION['carrinho'][$id_produto]['quantidade'] += $quantidade;
-                        echo "<p class='alert alert-success'>Quantidade atualizada no carrinho!</p>";
+                        $mensagem_status = "Quantidade atualizada no carrinho!";
+                        $tipo_mensagem = 'success';
                     }
                 } else {
                     $_SESSION['carrinho'][$id_produto] = array(
@@ -94,15 +104,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'quantidade' => $quantidade,
                         'imagem' => $produto['imagem'] ?? 'caminho/para/imagem_padrao.jpg'
                     );
-                    echo "<p class='alert alert-success'>Produto adicionado ao carrinho com sucesso!</p>";
+                    $mensagem_status = "Produto adicionado ao carrinho com sucesso!";
+                    $tipo_mensagem = 'success';
                 }
             }
         } catch (PDOException $e) {
-            echo "<p class='alert alert-danger'>Erro ao adicionar ao carrinho: " . $e->getMessage() . "</p>";
+            $mensagem_status = "Erro ao adicionar ao carrinho: " . $e->getMessage();
+            $tipo_mensagem = 'danger';
             error_log("Erro PDO ao adicionar ao carrinho: " . $e->getMessage());
         }
     } else {
-        echo "<p class='alert alert-danger'>Dados inválidos para adicionar ao carrinho.</p>";
+        $mensagem_status = "Dados inválidos para adicionar ao carrinho.";
+        $tipo_mensagem = 'danger';
     }
 }
 
@@ -205,17 +218,11 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <?php include "header.php"; ?>
 
     <div class="container mt-3">
-        <!--<h1 class="text-center mb-4 h2 text-primary">Loja Virtual AcheiPet</h1>-->
-
-        <div class="d-flex justify-content-center mb-4"><img src="images/banner.png" class="img-fluid mb-3"
+        <div class="d-flex justify-content-center"><img src="images/banner.png" class="img-fluid mb-3"
                 alt="Banner de Promoção" style="max-width: 600px;"></div>
-        <div class="mb-4 p-4">
-            <!--<h5 class="card-title mb-3">Filtrar Produtos</h5>-->
-
+        <div class="p-4">
             <div class="d-flex d-grid gap-2 d-md-block justify-content-center mb-4">
-                <!--<a href="carrinho.php" class="btn btn-primary btn-sm">Ver Carrinho</a>-->
                 <a href="cadastrar_produto.php" class="btn btn-outline-primary btn-sm">Cadastrar novo produto</a>
-                <!--<a href="index.php" class="btn btn-outline-primary btn-sm">Página Inicial</a>-->
             </div>
 
             <form method="get" action="loja_virtual.php" class="row g-3 align-items-end">
@@ -260,6 +267,12 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
             </form>
 
         </div>
+
+        <?php if (!empty($mensagem_status)) : ?>
+        <div class="alert alert-<?php echo $tipo_mensagem; ?> text-center" role="alert">
+            <?php echo htmlspecialchars($mensagem_status); ?>
+        </div>
+        <?php endif; ?>
 
         <?php if (empty($produtos)) : ?>
         <div class="alert alert-info text-center" role="alert">

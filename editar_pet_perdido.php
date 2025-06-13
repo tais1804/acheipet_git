@@ -192,18 +192,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         ?>
                         <div class="card">
                             <div class="card-body">
-                                <h1 class="h4">Editar pet</h1>
+                                <h1 class="h4">Editar pet perdido</h1>
                                 <form class="" method="post" enctype="multipart/form-data"
                                     action="editar_pet_perdido.php?id=<?php echo $id_pet_perdido; ?>">
 
-                                    <div class="mb-3 row">
+                                    <div class="mb-9 row row-gap-4">
                                         <div class="col-md-4">
                                             <label class="form-label">Nome:</label class="form-label">
                                             <input class="form-control" type="text" name="nome"
-                                                value="<?php echo htmlspecialchars($pet["nome"] ?? ''); ?>"><br>
+                                                value="<?php echo htmlspecialchars($pet["nome"] ?? ''); ?>">
                                         </div>
                                         <div class="col-md-2">
-                                            <label class="form-label">Espécie:</label><br>
+                                            <label class="form-label">Espécie:</label>
                                             <select class="form-select" name="especie" required>
                                                 <option value="">Selecione a espécie</option>
                                                 <?php foreach ($categorias_animais as $categoria): ?>
@@ -213,27 +213,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     <?php echo htmlspecialchars($categoria['nome_categoria']); ?>
                                                 </option>
                                                 <?php endforeach; ?>
-                                            </select><br>
+                                            </select>
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">Raça:</label class="form-label">
                                             <input class="form-control" type="text" name="raca"
-                                                value="<?php echo htmlspecialchars($pet["raca"] ?? ''); ?>"><br>
+                                                value="<?php echo htmlspecialchars($pet["raca"] ?? ''); ?>">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">Data da perda:</label class="form-label">
                                             <input class="form-control" type="date" name="data_perda"
-                                                value="<?php echo htmlspecialchars($pet["data_perda"] ?? ''); ?>"><br>
+                                                value="<?php echo htmlspecialchars($pet["data_perda"] ?? ''); ?>">
                                         </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">Local perdido:</label class="form-label">
-                                            <input class="form-control" type="text" name="local_perdido"
-                                                value="<?php echo htmlspecialchars($pet["local_perdido"] ?? ''); ?>"><br>
-                                        </div>
+
                                         <div class="col-md-1">
                                             <label class="form-label">Idade:</label class="form-label">
                                             <input class="form-control" type="number" name="idade_valor"
-                                                value="<?php echo htmlspecialchars($pet["idade_valor"] ?? ''); ?>"><br>
+                                                value="<?php echo htmlspecialchars($pet["idade_valor"] ?? ''); ?>">
                                         </div>
                                         <div class="col-md-2">
                                             <label class="form-label">Unidade da Idade:</label>
@@ -246,9 +242,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     <?php if (($pet["idade_unidade"] ?? '') == "meses") echo "selected"; ?>>
                                                     Meses
                                                 </option>
-                                            </select><br>
+                                            </select>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <label class="form-label">Gênero:</label>
                                             <select class="form-select" name="genero" required>
                                                 <option value="">Selecione o gênero</option>
@@ -269,16 +265,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <div class="col-md-3">
                                             <label class="form-label">Telefone de Contato:</label>
                                             <input class="form-control" type="text" name="telefone_contato"
-                                                value="<?php echo htmlspecialchars($pet["telefone_contato"] ?? ''); ?>"><br>
+                                                value="<?php echo htmlspecialchars($pet["telefone_contato"] ?? ''); ?>">
                                         </div>
-                                        <div class="col-md-12">
-                                            <label class="form-label">Descrição:</label class="form-label">
-                                            <textarea class="form-control"
-                                                name="descricao"><?php echo htmlspecialchars($pet["descricao"] ?? ''); ?></textarea><br>
+                                        <div class="col-md-9">
+                                            <label class="form-label">Local perdido:</label class="form-label">
+                                            <input class="form-control" type="text" name="local_perdido"
+                                                value="<?php echo htmlspecialchars($pet["local_perdido"] ?? ''); ?>">
                                         </div>
-
-                                        <div class="col-md-12">
-                                            <label class="form-label">Status:</label class="form-label"><br>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Status:</label class="form-label">
                                             <select class="form-select" name="status_perda">
                                                 <option value="Perdido"
                                                     <?php if (($pet["status_perda"] ?? '') == "Perdido") echo "selected"; ?>>
@@ -287,19 +282,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <option value="Encontrado"
                                                     <?php if (($pet["status_perda"] ?? '') == "Encontrado") echo "selected"; ?>>
                                                     Encontrado</option>
-                                            </select><br><br>
+                                            </select>
                                         </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Descrição:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="descricao"><?php echo htmlspecialchars($pet["descricao"] ?? ''); ?></textarea>
+                                        </div>
+
+
 
                                         <div class="col-md-10">
-                                            <label class="form-label">Foto atual:</label><br>
+
 
                                             <label class="form-label">Alterar Foto:</label class="form-label">
-                                            <input class="form-control" type="file" name="foto"><br>
+                                            <input class="form-control" type="file" name="foto">
                                         </div>
                                         <div class="col-md-2">
+                                            <label class="form-label">Foto atual:</label>
                                             <?php if (!empty($pet["foto"])): // Use !empty() para verificar se a string não está vazia também?>
                                             <img src="<?php echo htmlspecialchars($pet["foto"]); ?>"
-                                                class="fotopet mb-2" alt="Foto do Pet"><br>
+                                                class="fotopet mb-2" alt="Foto do Pet">
                                             <?php else: ?>
                                             <p>Nenhuma foto atual.</p>
                                             <?php endif; ?>

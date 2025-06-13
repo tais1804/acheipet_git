@@ -200,12 +200,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <label class="form-label">Descrição</label>
                                                 <textarea class="form-control" name="descricao"></textarea>
                                             </div>
-                                            <div class="col-md-11">
+                                            <div class="col-md-10">
                                                 <label class="form-label">Foto</label>
                                                 <input class="form-control" type="file" name="foto" accept="image/*"
                                                     required>
                                             </div>
-                                            <div class="col-1 d-grid justify-content-md-end">
+                                            <div class="col-2">
                                                 <input class="form-control btn btn-primary" type="submit"
                                                     value="Cadastrar">
                                             </div>

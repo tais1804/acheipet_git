@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         ?>
                         <div class="card">
                             <div class="card-body">
-                                <h1 class="h4">Editar pet</h1>
+                                <h1 class="h4">Editar pet para adoção</h1>
                                 <form class="" method="post" enctype="multipart/form-data"
                                     action="editar_pet.php?id=<?php echo $id_pet; ?>">
 
@@ -183,36 +183,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     Informado</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-3">
                                             <label class="form-label">Porte:</label class="form-label">
                                             <input class="form-control" type="text" name="porte"
                                                 value="<?php echo $pet["porte"]; ?>"><br>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">Temperamento:</label class="form-label">
-                                            <textarea class="form-control"
-                                                name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label">Vacinas:</label class="form-label">
-                                            <textarea class="form-control"
-                                                name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">Histórico de Saúde:</label class="form-label">
-                                            <textarea class="form-control"
-                                                name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <label class="form-label">Foto atual:</label><br>
-                                            <?php if ($pet["foto"]): ?>
-                                            <img src="<?php echo htmlspecialchars($pet["foto"]); ?>"
-                                                class="fotopet mb-2" alt="Foto do Pet"><br>
-                                            <?php else: ?>
-                                            <p>Nenhuma foto atual.</p>
-                                            <?php endif; ?>
-                                            <label class="form-label">Alterar Foto:</label class="form-label">
-                                            <input class="form-control" type="file" name="foto"><br>
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label">Status:</label class="form-label"><br>
@@ -229,6 +203,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     Encontrado</option>
                                             </select><br><br>
                                         </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Temperamento:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="temperamento"><?php echo $pet["temperamento"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Vacinas:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="vacinas"><?php echo $pet["vacinas"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Histórico de Saúde:</label class="form-label">
+                                            <textarea class="form-control"
+                                                name="historico_saude"><?php echo $pet["historico_saude"]; ?></textarea><br>
+                                        </div>
+                                        <div class="col-md-10">
+
+                                            <label class="form-label">Alterar Foto:</label class="form-label">
+                                            <input class="form-control" type="file" name="foto"><br>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Foto atual:</label><br>
+                                            <?php if ($pet["foto"]): ?>
+                                            <img src="<?php echo htmlspecialchars($pet["foto"]); ?>"
+                                                class="fotopet mb-2" alt="Foto do Pet"><br>
+                                            <?php else: ?>
+                                            <p>Nenhuma foto atual.</p>
+                                            <?php endif; ?>
+                                        </div>
+
                                         <div class="col-md-2">
                                             <input class="btn btn-primary" type="submit" value="Salvar Alterações">
                                             <input type="hidden" name="id_usuario"
