@@ -150,12 +150,13 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     }
 
     .product-card {
-        border: 1px solid #dee2e6;
-        border-radius: 0.5rem;
+        border: 0px solid #dee2e6;
+        border-radius: 1.0rem;
         padding: 1rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        box-shadow: 0rem 0.2rem 0.35rem rgba(0, 0, 0, 0.090);
         transition: transform 0.2s ease-in-out;
+        background: #ffffff;
     }
 
     .product-card:hover {
@@ -192,23 +193,31 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
         margin-top: 7px;
         height: 100%;
     }
+
+    .form-label {
+        font-size: 0.8rem !important;
+        color: #7f7f7f;
+    }
     </style>
 </head>
 
 <body>
     <?php include "header.php"; ?>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4 h2 text-primary">Loja Virtual AcheiPet</h1>
+    <div class="container mt-3">
+        <!--<h1 class="text-center mb-4 h2 text-primary">Loja Virtual AcheiPet</h1>-->
 
-        <div class="d-flex d-grid gap-2 d-md-block justify-content-center mb-4">
-            <a href="index.php" class="btn btn-outline-secondary">Página Inicial</a>
-            <a href="carrinho.php" class="btn btn-primary">Ver Carrinho</a>
-            <a href="cadastrar_produto.php" class="btn btn-outline-secondary">Cadastrar novo produto</a>
-        </div>
+        <div class="d-flex justify-content-center mb-4"><img src="../img/banner.png" class="img-fluid mb-3"
+                alt="Banner de Promoção" style="max-width: 600px;"></div>
+        <div class="mb-4 p-4">
+            <!--<h5 class="card-title mb-3">Filtrar Produtos</h5>-->
 
-        <div class="card mb-4 p-4 shadow-sm">
-            <h5 class="card-title mb-3">Filtrar Produtos</h5>
+            <div class="d-flex d-grid gap-2 d-md-block justify-content-center mb-4">
+                <!--<a href="carrinho.php" class="btn btn-primary btn-sm">Ver Carrinho</a>-->
+                <a href="cadastrar_produto.php" class="btn btn-outline-primary btn-sm">Cadastrar novo produto</a>
+                <!--<a href="index.php" class="btn btn-outline-primary btn-sm">Página Inicial</a>-->
+            </div>
+
             <form method="get" action="loja_virtual.php" class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label for="pesquisa" class="form-label">Nome do Produto:</label>
