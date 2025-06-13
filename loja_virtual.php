@@ -207,7 +207,7 @@ $categorias_produtos = obterCategoriasProdutos($conexao);
     <div class="container mt-3">
         <!--<h1 class="text-center mb-4 h2 text-primary">Loja Virtual AcheiPet</h1>-->
 
-        <div class="d-flex justify-content-center mb-4"><img src="../img/banner.png" class="img-fluid mb-3"
+        <div class="d-flex justify-content-center mb-4"><img src="images/banner.png" class="img-fluid mb-3"
                 alt="Banner de Promoção" style="max-width: 600px;"></div>
         <div class="mb-4 p-4">
             <!--<h5 class="card-title mb-3">Filtrar Produtos</h5>-->
