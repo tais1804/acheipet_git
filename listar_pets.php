@@ -275,9 +275,9 @@ try {
                                     <?php
                                                 $caminho_foto = $pet["foto"];
                                                 if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                                    echo "<img class='card-img-top card-img-achei object-fit-contain border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
+                                                    echo "<img class='card-img-top card-img-achei object-fit-cover border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
                                                 } else {
-                                                    echo "<img class='card-img-top card-img-achei object-fit-contain border rounded' src='images/placeholder-pet.png' alt='Sem foto'>"; // Placeholder
+                                                    echo "<img class='card-img-top card-img-achei object-fit-cover border rounded' src='images/placeholder-pet.png' alt='Sem foto'>"; // Placeholder
                                                 }
                                                 ?>
                                     <div class="card-body d-flex flex-column">

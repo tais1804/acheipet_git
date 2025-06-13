@@ -282,7 +282,7 @@ try {
                                     <?php
                                                 $caminho_foto = $pet_perdido["foto"];
                                                 if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                                    echo "<img style='height: 299px' class='card-img-top card-img-achei object-fit-contain border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet Perdido'>";
+                                                    echo "<img style='height: 299px' class='card-img-top card-img-achei object-fit-cover border rounded' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet Perdido'>";
                                                 } else {
                                                     echo "Sem foto";
                                                 }
