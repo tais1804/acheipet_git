@@ -165,30 +165,35 @@ $contagem_postagens = contarPostagens($conexao, $id_usuario);
                         <td class="align-middle"><?php echo htmlspecialchars($pet['genero']); ?></td>
                         <td class="align-middle">
                             <?php 
-                                    // Exibe a idade combinando valor e unidade, se existirem
-                                    if (!empty($pet['idade_valor']) && !empty($pet['idade_unidade'])) {
-                                        echo htmlspecialchars($pet['idade_valor']) . " " . htmlspecialchars($pet['idade_unidade']);
-                                    } else {
-                                        echo "N/A"; // Ou alguma outra indicação se a idade não for aplicável
-                                    }
-                                    ?>
+                                        // Exibe a idade combinando valor e unidade, se existirem
+                                        if (!empty($pet['idade_valor']) && !empty($pet['idade_unidade'])) {
+                                            echo htmlspecialchars($pet['idade_valor']) . " " . htmlspecialchars($pet['idade_unidade']);
+                                        } else {
+                                            echo "N/A"; // Ou alguma outra indicação se a idade não for aplicável
+                                        }
+                                        ?>
                         </td>
                         <td class="align-middle"><?php echo htmlspecialchars($pet['porte']); ?></td>
                         <td class="align-middle"><?php echo htmlspecialchars($pet['tipo_postagem']); ?></td>
                         <td class="align-middle"><?php echo htmlspecialchars($pet['status']); ?></td>
                         <td class="align-middle">
                             <?php
-                                    $caminho_foto = $pet["foto"];
-                                    if (file_exists($caminho_foto) && !empty($caminho_foto)) {
-                                        echo "<img class='fotopet' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
-                                    } else {
-                                        echo "Sem foto";
-                                    }
-                                    ?>
+                                        $caminho_foto = $pet["foto"];
+                                        if (file_exists($caminho_foto) && !empty($caminho_foto)) {
+                                            echo "<img class='fotopet' src='" . htmlspecialchars($caminho_foto) . "' alt='Foto do Pet'>";
+                                        } else {
+                                            echo "Sem foto";
+                                        }
+                                        ?>
                         </td>
                         <td class="align-middle">
-                            <a href="editar_pet.php?id=<?php echo htmlspecialchars($pet['id_pet_principal']); ?>&tipo=<?php echo urlencode($pet['tipo_postagem']); ?>"
+                            <?php if ($pet['tipo_postagem'] === 'Doar Pet'): ?>
+                            <a href="editar_pet.php?id=<?php echo htmlspecialchars($pet['id_pet_principal']); ?>"
                                 class="btn btn-warning btn-sm me-2">Editar</a>
+                            <?php elseif ($pet['tipo_postagem'] === 'Perdi Meu Pet'): ?>
+                            <a href="editar_pet_perdido.php?id=<?php echo htmlspecialchars($pet['id_pet_principal']); ?>"
+                                class="btn btn-warning btn-sm me-2">Editar</a>
+                            <?php endif; ?>
                             <a href="excluir_pet.php?id=<?php echo htmlspecialchars($pet['id_pet_principal']); ?>&tipo=<?php echo urlencode($pet['tipo_postagem']); ?>"
                                 class="btn btn-danger btn-sm"
                                 onclick="return confirm('Tem certeza que deseja excluir este pet?');">Excluir</a>
