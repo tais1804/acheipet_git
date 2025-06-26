@@ -17,10 +17,10 @@ foreach ($_SESSION['carrinho'] as $produto) {
         <nav class="ml-6 hidden md:flex">
             <ul class="flex space-x-6">
                 <li>
-                    <a href="listar_pets.php" class="text-red-500 hover:text-red-600 transition-colors">Adotar</a>
+                    <a href="cadastrar_pet.php" class="text-red-500 hover:text-red-600 transition-colors">Doar</a>
                 </li>
                 <li>
-                    <a href="cadastrar_pet.php" class="text-red-500 hover:text-red-600 transition-colors">Doar</a>
+                    <a href="listar_pets.php" class="text-red-500 hover:text-red-600 transition-colors">Adotar</a>
                 </li>
                 <li>
                     <a href="cadastrar_pet_perdido.php" class="text-red-500 hover:text-red-600 transition-colors">Perdi
